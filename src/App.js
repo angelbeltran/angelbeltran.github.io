@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 //import './App.css';
+import Asteroids from 'asteroids'
+import Tetris from 'angels-tetris'
 
 
 function SidebarTab ({ onClick, onMouseOver, onMouseLeave, children }) {
@@ -46,12 +48,16 @@ class Sidebar extends Component {
 
   // tabIndex (n): nth tab
   onTabMouseLeave = (tabIndex) => {
-    console.log('TEST')
     if (this.state.highlightedTab === tabIndex) {
       this.setState({
         highlightedTab: -1,
       })
     }
+  }
+
+  // tabIndex (n): nth tab
+  onTabMouseClick = (tabIndex) => {
+    this.props.onTabMouseClick(tabIndex)
   }
 
   getTabWrapperStyle = (index) => {
@@ -80,66 +86,74 @@ class Sidebar extends Component {
       flex: '0 2 12pt',
     }
 
+    const tabContent = [
+      'Asteroids',
+      'Tetris',
+      'Tab 3',
+    ]
+
     return (
       <div style={sidebarStyle}>
         <div className="text-center">
           <img alt="portrait" src={logo} style={portraitWrapperStyle}/>
-          (Insert photo)
-          Angel Beltran
         </div>
 
         <div style={deadSpaceStyle}>
           {/* dead space */}
         </div>
 
-        <div style={this.getTabWrapperStyle(0)}>
-          <SidebarTab
-            onClick={() => console.log('YOLO')}
-            onMouseOver={() => this.onTabMouseOver(0)}
-            onMouseLeave={() => this.onTabMouseLeave(0)}
-          >
-            <div style={{ padding: 6 }}>
-              Asteroids
+        {
+          tabContent.map((content, index) => (
+            <div key={content} style={this.getTabWrapperStyle(index)}>
+              <SidebarTab
+                onClick={() => this.onTabMouseClick(index)}
+                onMouseOver={() => this.onTabMouseOver(index)}
+                onMouseLeave={() => this.onTabMouseLeave(index)}
+              >
+                <div style={{ padding: 6 }}>
+                  {content}
+                </div>
+              </SidebarTab>
             </div>
-          </SidebarTab>
-        </div>
-        <div style={this.getTabWrapperStyle(1)}>
-          <SidebarTab
-            onClick={() => console.log('YOLO')}
-            onMouseOver={() => this.onTabMouseOver(1)}
-            onMouseLeave={() => this.onTabMouseLeave(1)}
-          >
-            <div style={{ padding: 6 }}>
-              Tetris
-            </div>
-          </SidebarTab>
-        </div>
-        <div style={this.getTabWrapperStyle(2)}>
-          <SidebarTab
-            onClick={() => console.log('YOLO')}
-            onMouseOver={() => this.onTabMouseOver(2)}
-            onMouseLeave={() => this.onTabMouseLeave(2)}
-          >
-            <div style={{ padding: 6 }}>
-              Tab 3
-            </div>
-          </SidebarTab>
-        </div>
+          ))
+        }
       </div>
     )
   }
 }
 
-function Body () {
+
+function Body ({ page }) {
+  let content = ''
+  if (page === 0) {
+    content = <Asteroids />
+  } else if (page === 1) {
+    content = <Tetris />
+  }
+
   return (
-    <div>
-      body
+    <div style={{ height: '100%' }}>
+      {content}
     </div>
   )
 }
 
 
 class App extends Component {
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      page: -1,            // which page is being shown (-1 <=> no pages selected); n-1 <=> nth page selected)
+    }
+  }
+
+  onTabMouseClick = (tabIndex) => {
+    this.setState({
+      page: tabIndex,
+    })
+  }
+
   render() {
     const appStyle = {
       height: '100vh',
@@ -151,40 +165,22 @@ class App extends Component {
     }
     const bodyWrapperStyle = {
       height: '100%',
-      backgroundColor: '#bbbbbb',
+      backgroundColor: 'rgb(200, 200, 200)',
     }
 
     return (
       <div style={appStyle}>
         <div className="row no-gutters" style={{ height: '100%' }}>
           <div className="col-1 col-2-xs" style={sidebarWrapperStyle}>
-            <Sidebar />
+            <Sidebar onTabMouseClick={this.onTabMouseClick}/>
           </div>
           <div className="col-11 col-10-xs" style={bodyWrapperStyle}>
-            <Body />
+            <Body page={this.state.page}/>
           </div>
         </div>
       </div>
     );
   }
 }
-
-/*
-class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
-      </div>
-    );
-  }
-}
-*/
 
 export default App;
