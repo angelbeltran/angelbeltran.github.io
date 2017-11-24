@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "angels-game-of-life": "^1.0.0",
     "angels-tetris": "^1.0.0",
     "asteroids": "^1.0.0",
     "gh-pages": "^1.0.0",
