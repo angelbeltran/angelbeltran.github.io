@@ -3,6 +3,7 @@ import logo from './logo.svg';
 import Asteroids from 'asteroids'
 import Tetris from 'angels-tetris'
 import GameOfLife from 'angels-game-of-life'
+import Graph from 'graph-app'
 
 
 function SidebarTab ({ onClick, onMouseOver, onMouseLeave, children }) {
@@ -87,6 +88,7 @@ class Sidebar extends Component {
     }
 
     const tabContent = [
+      'Force-Directed Graph',
       'Game of Life',
       'Asteroids',
       'Tetris',
@@ -282,11 +284,14 @@ class GameOfLifeWrapper extends Component {
 
 function Body ({ page }) {
   let content = ''
+
   if (page === 0) {
-    content = <GameOfLifeWrapper />
+    content = <GraphWrapper />
   } else if (page === 1) {
-    content = <Asteroids />
+    content = <GameOfLifeWrapper />
   } else if (page === 2) {
+    content = <Asteroids />
+  } else if (page === 3) {
     content = <Tetris />
   }
 
@@ -295,6 +300,86 @@ function Body ({ page }) {
       {content}
     </div>
   )
+}
+
+class GraphWrapper extends Component {
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      nodes: {
+        1: { id: 1 },
+        2: { id: 2 },
+        3: { id: 3 },
+        4: { id: 4 },
+        5: { id: 5 },
+        6: { id: 6 },
+        7: { id: 7 },
+        8: { id: 8 },
+        9: { id: 9 },
+        10: { id: 10 },
+        11: { id: 11 },
+        12: { id: 12 },
+        13: { id: 13 },
+        14: { id: 14 },
+        15: { id: 15 },
+        16: { id: 16 },
+        17: { id: 17 },
+        18: { id: 18 },
+        19: { id: 19 },
+        20: { id: 20 },
+      },
+      edges: [
+        { src: 1, dst: 2 },
+        { src: 1, dst: 3 },
+        { src: 1, dst: 4 },
+        { src: 2, dst: 4 },
+        { src: 5, dst: 6 },
+        { src: 5, dst: 7 },
+        { src: 5, dst: 8 },
+        { src: 6, dst: 8 },
+        { src: 9, dst: 10 },
+        { src: 9, dst: 11 },
+        { src: 9, dst: 12 },
+        { src: 10, dst: 12 },
+        { src: 13, dst: 14 },
+        { src: 13, dst: 15 },
+        { src: 13, dst: 16 },
+        { src: 14, dst: 16 },
+        { src: 17, dst: 18 },
+        { src: 17, dst: 19 },
+        { src: 17, dst: 20 },
+        { src: 18, dst: 20 },
+      ],
+    }
+  }
+
+  render() {
+    return (
+      <div style={{
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}>
+        <div style={{
+          width: '80%',
+          height: '80%',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}>
+          <Graph
+            nodes={this.state.nodes}
+            edges={this.state.edges}
+            zoom={200}
+            interval={50}
+          />
+        </div>
+      </div>
+    )
+  }
 }
 
 
