@@ -4,6 +4,7 @@ import Asteroids from 'asteroids'
 import Tetris from 'angels-tetris'
 import GameOfLife from 'angels-game-of-life'
 import Graph from 'graph-app'
+import Maze3D from './maze'
 
 
 function SidebarTab ({ onClick, onMouseOver, onMouseLeave, children }) {
@@ -92,6 +93,7 @@ class Sidebar extends Component {
       'Game of Life',
       'Asteroids',
       'Tetris',
+      'Maze',
     ]
 
     return (
@@ -293,6 +295,8 @@ function Body ({ page }) {
     content = <Asteroids />
   } else if (page === 3) {
     content = <Tetris />
+  } else if (page === 4) {
+    content = <Maze3D />
   }
 
   return (
