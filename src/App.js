@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import Asteroids from 'asteroids'
-import Tetris from 'angels-tetris'
-import GameOfLife from './game-of-life'
-import Graph from './graph'
-import Maze3D from './maze'
+import Tetris from './tetris';
+import GameOfLife from './game-of-life';
+import Graph from './graph';
+import Maze3D from './maze';
 
 
 function SidebarTab ({ onClick, onMouseOver, onMouseLeave, children }) {
