@@ -28,13 +28,14 @@
     "react-scripts": "^1.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "node app.js",
+    "react-start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d build",
-    "gdeploy": "gcloud app deploy"
+    "deploy-github": "gh-pages -d build",
+    "deploy": "gcloud --project=angel-beltran app deploy"
   },
   "homepage": "http://angelbeltran.com"
 }
