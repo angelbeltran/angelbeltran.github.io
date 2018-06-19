@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
-import Asteroids from 'asteroids'
+import Asteroids from './asteroids';
 import Tetris from './tetris';
 import GameOfLife from './game-of-life';
 import Graph from './graph';
