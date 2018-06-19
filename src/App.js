@@ -1,35 +1,11 @@
 import React, { Component } from 'react';
-import { Route, Link } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 import logo from './logo.svg';
 import Asteroids from './asteroids';
 import Tetris from './tetris';
 import GameOfLife from './game-of-life';
 import Graph from './graph';
 import Maze3D from './maze';
-
-
-function SidebarTab ({ onClick, onMouseOver, onMouseLeave, children }) {
-  const outerTabStyle = {
-    display: 'flex',
-    height: '100%',
-    width: '100%',
-    justifyContent: 'center',
-  }
-  const innerTabStyle = {
-    display: 'flex',
-    height: '100%',
-    width: '100%',
-    flexDirection: 'column',
-    justifyContent: 'center',
-  }
-  return (
-    <div style={outerTabStyle} onClick={onClick} onMouseOver={onMouseOver} onMouseLeave={onMouseLeave}>
-      <div className="text-center" style={innerTabStyle}>
-        {children}
-      </div>
-    </div>
-  )
-}
 
 
 class GameOfLifeWrapper extends Component {
@@ -276,16 +252,9 @@ class App extends Component {
       height: '100vh',
       width:'100wh',
     }
-    const portraitWrapperStyle = {
-      flex: '0 1',
-    }
     const rowStyle = {
       height: '100%',
     };
-    const sidebarWrapperStyle = {
-      height: '100%',
-      backgroundColor: '#888888',
-    }
     const bodyWrapperStyle = {
       height: '100%',
       backgroundColor: 'rgb(200, 200, 200)',
@@ -314,7 +283,7 @@ class App extends Component {
                 <a className="nav-link" href="/contact">Contact</a>
               </li>
               <li className="nav-item dropdown">
-                <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <a className="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   Fun Stuff
                 </a>
                 <div className="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -327,12 +296,9 @@ class App extends Component {
 
                   <div className="dropdown-divider"></div>
 
-                  <a className="dropdown-item" href="#">Something else here</a>
+                  <a className="dropdown-item" href="/">Something else here</a>
 
                 </div>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link disabled" href="#">Disabled</a>
               </li>
             </ul>
 
