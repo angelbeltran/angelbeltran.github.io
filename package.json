@@ -1,12 +1,22 @@
 {
-  "name": "angelbeltran.github.io",
-  "version": "0.1.0",
+  "name": "angelbeltran.com",
+  "version": "0.1.1",
   "private": true,
+  "author": "Angel Beltran",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/angelbeltran/angelbeltran.github.io.git"
+  },
+  "engines": {
+    "node": "8.x.x"
+  },
   "dependencies": {
+    "express": "^4.16.3",
     "gh-pages": "^1.2.0",
     "lodash.clonedeep": "^4.5.0",
     "lodash.map": "^4.6.0",
     "lodash.reduce": "^4.6.0",
+    "mobile-detect": "^1.4.2",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
     "react-redux": "^5.0.7",
@@ -23,7 +33,8 @@
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "deploy": "gh-pages -d build",
+    "gdeploy": "gcloud app deploy"
   },
   "homepage": "http://angelbeltran.com"
 }
