@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Route, Link } from 'react-router-dom';
 import logo from './logo.svg';
 import Asteroids from './asteroids';
 import Tetris from './tetris';
@@ -28,102 +29,6 @@ function SidebarTab ({ onClick, onMouseOver, onMouseLeave, children }) {
       </div>
     </div>
   )
-}
-
-class Sidebar extends Component {
-  constructor(props) {
-    super(props)
-
-    this.state = {
-      highlightedTab: -1, // which tab is being highlighted (-1 <=> none; n-1 <=> nth tab highlighted)
-    }
-  }
-
-  // tabIndex (n): nth tab
-  onTabMouseOver = (tabIndex) => {
-    if (this.state.highlightedTab !== tabIndex) {
-      this.setState({
-        highlightedTab: tabIndex,
-      })
-    }
-  }
-
-  // tabIndex (n): nth tab
-  onTabMouseLeave = (tabIndex) => {
-    if (this.state.highlightedTab === tabIndex) {
-      this.setState({
-        highlightedTab: -1,
-      })
-    }
-  }
-
-  // tabIndex (n): nth tab
-  onTabMouseClick = (tabIndex) => {
-    this.props.onTabMouseClick(tabIndex)
-  }
-
-  getTabWrapperStyle = (index) => {
-    const style = {
-      width: '100%',
-      flex: '1 0',
-    }
-    if (this.state.highlightedTab === index) {
-      style.backgroundColor = '#bbbbbb'
-    }
-
-    return style
-  }
-
-  render() {
-    const sidebarStyle = {
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'flexStart',
-    }
-    const portraitWrapperStyle = {
-      flex: '0 1',
-    }
-    const deadSpaceStyle={
-      height: '10%',
-      flex: '0 2 12pt',
-    }
-
-    const tabContent = [
-      'Force-Directed Graph',
-      'Game of Life',
-      'Asteroids',
-      'Tetris',
-      'Maze',
-    ]
-
-    return (
-      <div style={sidebarStyle}>
-        <div className="text-center">
-          <img alt="portrait" src={logo} style={portraitWrapperStyle}/>
-        </div>
-
-        <div style={deadSpaceStyle}>
-          {/* dead space */}
-        </div>
-
-        {
-          tabContent.map((content, index) => (
-            <div key={content} style={this.getTabWrapperStyle(index)}>
-              <SidebarTab
-                onClick={() => this.onTabMouseClick(index)}
-                onMouseOver={() => this.onTabMouseOver(index)}
-                onMouseLeave={() => this.onTabMouseLeave(index)}
-              >
-                <div style={{ padding: 6 }}>
-                  {content}
-                </div>
-              </SidebarTab>
-            </div>
-          ))
-        }
-      </div>
-    )
-  }
 }
 
 
@@ -284,28 +189,6 @@ class GameOfLifeWrapper extends Component {
 }
 
 
-function Body ({ page }) {
-  let content = ''
-
-  if (page === 0) {
-    content = <GraphWrapper />
-  } else if (page === 1) {
-    content = <GameOfLifeWrapper />
-  } else if (page === 2) {
-    content = <Asteroids />
-  } else if (page === 3) {
-    content = <Tetris />
-  } else if (page === 4) {
-    content = <Maze3D />
-  }
-
-  return (
-    <div style={{ height: '100%' }}>
-      {content}
-    </div>
-  )
-}
-
 class GraphWrapper extends Component {
   constructor(props) {
     super(props)
@@ -388,26 +271,17 @@ class GraphWrapper extends Component {
 
 
 class App extends Component {
-  constructor(props) {
-    super(props)
-
-    this.state = {
-      //page: -1,            // which page is being shown (-1 <=> no pages selected); n-1 <=> nth page selected)
-      page: 0,            // which page is being shown (-1 <=> no pages selected); n-1 <=> nth page selected)
-    }
-  }
-
-  onTabMouseClick = (tabIndex) => {
-    this.setState({
-      page: tabIndex,
-    })
-  }
-
   render() {
     const appStyle = {
       height: '100vh',
       width:'100wh',
     }
+    const portraitWrapperStyle = {
+      flex: '0 1',
+    }
+    const rowStyle = {
+      height: '100%',
+    };
     const sidebarWrapperStyle = {
       height: '100%',
       backgroundColor: '#888888',
@@ -419,12 +293,65 @@ class App extends Component {
 
     return (
       <div style={appStyle}>
-        <div className="row no-gutters" style={{ height: '100%' }}>
-          <div className="col-2 col-2-sm" style={sidebarWrapperStyle}>
-            <Sidebar onTabMouseClick={this.onTabMouseClick}/>
+
+        <nav className="navbar navbar-expand-md navbar-light bg-light">
+          <a className="navbar-brand" href="/home">
+            <img alt="portrait" className="d-block" width="48" height="48" src={logo}/>
+          </a>
+          <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span className="navbar-toggler-icon"></span>
+          </button>
+
+          <div className="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul className="navbar-nav mr-auto">
+              <li className="nav-item active">
+                <a className="nav-link" href="/home">Home <span className="sr-only">(current)</span></a>
+              </li>
+              <li className="nav-item">
+                <a className="nav-link" href="/about">About</a>
+              </li>
+              <li className="nav-item">
+                <a className="nav-link" href="/contact">Contact</a>
+              </li>
+              <li className="nav-item dropdown">
+                <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Fun Stuff
+                </a>
+                <div className="dropdown-menu" aria-labelledby="navbarDropdown">
+                
+                  <a className="dropdown-item" href="/force-directed-graph">Force-Directed Graph</a>
+                  <a className="dropdown-item" href="/game-of-life">Game of Life</a>
+                  <a className="dropdown-item" href="/asteroids">Asteroids</a>
+                  <a className="dropdown-item" href="/tetris">Tetris</a>
+                  <a className="dropdown-item" href="/maze">Maze</a>
+
+                  <div className="dropdown-divider"></div>
+
+                  <a className="dropdown-item" href="#">Something else here</a>
+
+                </div>
+              </li>
+              <li className="nav-item">
+                <a className="nav-link disabled" href="#">Disabled</a>
+              </li>
+            </ul>
+
+            <form className="form-inline my-2 my-lg-0">
+              <input className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" />
+              <button className="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            </form>
           </div>
-          <div className="col-10 col-10-sm" style={bodyWrapperStyle}>
-            <Body page={this.state.page}/>
+        </nav>
+
+        <div className="row no-gutters" style={rowStyle}>
+          <div className="col" style={bodyWrapperStyle}>
+            <div style={{ height: '100%' }}>
+              <Route path="/force-directed-graph" component={GraphWrapper} />
+              <Route path="/game-of-life" component={GameOfLifeWrapper} />
+              <Route path="/asteroids" component={Asteroids} />
+              <Route path="/tetris" component={Tetris} />
+              <Route path="/maze" component={Maze3D} />
+            </div>
           </div>
         </div>
       </div>

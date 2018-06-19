@@ -17,9 +17,11 @@
     "lodash.map": "^4.6.0",
     "lodash.reduce": "^4.6.0",
     "mobile-detect": "^1.4.2",
+    "morgan": "^1.9.0",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
     "react-redux": "^5.0.7",
+    "react-router-dom": "^4.3.1",
     "redux": "^4.0.0",
     "redux-saga": "^0.16.0",
     "three": "^0.90.0"
@@ -29,6 +31,7 @@
   },
   "scripts": {
     "start": "node app.js",
+    "dev": "nodemon app.js",
     "react-start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",

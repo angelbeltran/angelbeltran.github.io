@@ -1,7 +1,9 @@
 const express = require('express');
+const morgan = require('morgan');
 
 const app = express();
 
+app.use(morgan(':method :url :status :response-time ms - :res[content-length]'));
 app.use(express.static('build'));
 
 // Start the server
