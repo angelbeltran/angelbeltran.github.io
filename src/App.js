@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import { Route } from 'react-router-dom';
 import logo from './logo.svg';
 import Asteroids from './asteroids';
-import Tetris from './tetris';
 import GameOfLife from './game-of-life';
 import Graph from './graph';
 import Maze3D from './maze';
+import Tetris from './tetris';
 
 
 class GameOfLifeWrapper extends Component {
@@ -248,20 +248,8 @@ class GraphWrapper extends Component {
 
 class App extends Component {
   render() {
-    const appStyle = {
-      height: '100vh',
-      width:'100wh',
-    }
-    const rowStyle = {
-      height: '100%',
-    };
-    const bodyWrapperStyle = {
-      height: '100%',
-      backgroundColor: 'rgb(200, 200, 200)',
-    }
-
     return (
-      <div style={appStyle}>
+      <div className="container-fluid p-0 m-0">
 
         <nav className="navbar navbar-expand-md navbar-light bg-light">
           <a className="navbar-brand" href="/home">
@@ -288,11 +276,11 @@ class App extends Component {
                 </a>
                 <div className="dropdown-menu" aria-labelledby="navbarDropdown">
                 
+                  <a className="dropdown-item" href="/asteroids">Asteroids</a>
                   <a className="dropdown-item" href="/force-directed-graph">Force-Directed Graph</a>
                   <a className="dropdown-item" href="/game-of-life">Game of Life</a>
-                  <a className="dropdown-item" href="/asteroids">Asteroids</a>
-                  <a className="dropdown-item" href="/tetris">Tetris</a>
                   <a className="dropdown-item" href="/maze">Maze</a>
+                  <a className="dropdown-item" href="/tetris">Tetris</a>
 
                   <div className="dropdown-divider"></div>
 
@@ -309,15 +297,13 @@ class App extends Component {
           </div>
         </nav>
 
-        <div className="row no-gutters" style={rowStyle}>
-          <div className="col" style={bodyWrapperStyle}>
-            <div style={{ height: '100%' }}>
-              <Route path="/force-directed-graph" component={GraphWrapper} />
-              <Route path="/game-of-life" component={GameOfLifeWrapper} />
-              <Route path="/asteroids" component={Asteroids} />
-              <Route path="/tetris" component={Tetris} />
-              <Route path="/maze" component={Maze3D} />
-            </div>
+        <div className="row no-gutters">
+          <div className="col">
+            <Route path="/asteroids" component={Asteroids} />
+            <Route path="/force-directed-graph" component={GraphWrapper} />
+            <Route path="/game-of-life" component={GameOfLifeWrapper} />
+            <Route path="/maze" component={Maze3D} />
+            <Route path="/tetris" component={Tetris} />
           </div>
         </div>
       </div>

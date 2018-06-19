@@ -187,8 +187,21 @@ class GameScreen extends Component {
 
   // button bar
   getButtonInterface = () => {
+    // TODO: revamp
     const buttonProps = {}
     const defaultStyle = { width: `${100 / 7}%` }
+
+    buttonProps.reset = {
+      style: defaultStyle,
+      onClick: (e) => {
+        e.preventDefault()
+        this.props.reset()
+      },
+      onTouchStart: (e) => {
+        e.preventDefault()
+        this.props.reset()
+      },
+    }
 
     buttonProps.up = {
       style: defaultStyle,
@@ -260,77 +273,38 @@ class GameScreen extends Component {
       },
     }
 
-    //const dummyHandler = () => console.log('RESET')
-    buttonProps.reset = {
-      style: defaultStyle,
-      onClick: (e) => {
-        e.preventDefault()
-        this.props.reset()
-      },
-      onTouchStart: (e) => {
-        e.preventDefault()
-        this.props.reset()
-      },
-    }
-
     const buttons = {}
-
-    if (isMobileDevice()) {
-      const divStyle = {
-        ...defaultStyle,
-        backgroundColor: 'rgb(200, 200, 200)',
-        border: 'solid 1px black',
-        textAlign: 'center',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-      }
-
-      buttons.up = <div {...buttonProps.up} style={divStyle}>
-        UP
-      </div>
-      buttons.down = <div {...buttonProps.down} style={divStyle}>
-        DOWN
-      </div>
-      buttons.left = <div {...buttonProps.left} style={divStyle}>
-        LEFT
-      </div>
-      buttons.right = <div {...buttonProps.right} style={divStyle}>
-        RIGHT
-      </div>
-      buttons.fireLeft = <div {...buttonProps.fire} style={divStyle}>
-        FIRE
-      </div>
-      buttons.fireRight = <div {...buttonProps.fire} style={divStyle}>
-        FIRE
-      </div>
-      buttons.reset = <div {...buttonProps.reset} style={divStyle}>
-        RESET
-      </div>
-    } else {
-      buttons.up = <button {...buttonProps.up}>
-        UP
-      </button>
-      buttons.down = <button {...buttonProps.down}>
-        DOWN
-      </button>
-      buttons.left = <button {...buttonProps.left}>
-        LEFT
-      </button>
-      buttons.right = <button {...buttonProps.right}>
-        RIGHT
-      </button>
-      // TODO: remove if unused
-      buttons.fireLeft = <button {...buttonProps.fire}>
-        FIRE
-      </button>
-      buttons.fireRight = <button {...buttonProps.fire}>
-        FIRE
-      </button>
-      buttons.reset = <button {...buttonProps.reset}>
-        RESET
-      </button>
+    const divStyle = {
+      ...defaultStyle,
+      backgroundColor: 'rgb(200, 200, 200)',
+      border: 'solid 1px black',
+      textAlign: 'center',
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
     }
+
+    buttons.up = (<div {...buttonProps.up} style={divStyle}>
+      UP
+    </div>);
+    buttons.down = (<div {...buttonProps.down} style={divStyle}>
+      DOWN
+    </div>);
+    buttons.left = (<div {...buttonProps.left} style={divStyle}>
+      LEFT
+    </div>);
+    buttons.right = (<div {...buttonProps.right} style={divStyle}>
+      RIGHT
+    </div>);
+    buttons.fireLeft = (<div {...buttonProps.fire} style={divStyle}>
+      FIRE
+    </div>);
+    buttons.fireRight = (<div {...buttonProps.fire} style={divStyle}>
+      FIRE
+    </div>);
+    buttons.reset = (<div {...buttonProps.reset} style={divStyle}>
+      RESET
+    </div>);
 
     return (
       <div style={{ height: '20%', width: '50%', display: 'flex', flexDirection: 'column' }}>
@@ -363,40 +337,68 @@ class GameScreen extends Component {
     const asteroids = this.getRenderList(this.props.asteroids)
     const bullets = this.getRenderList(this.props.bullets)
 
+    // TODO: make the height the of the container or page the limiting factor in the dimensions of the svg
     return (
       <div
-        style={style}
+        className="container-fluid m-0 p-0"
       >
-        <svg
-          version="1.1"
-          baseProfile="full"
-          width="80%" height="80%"
-          viewBox="0 0 100 100"
-          xmlns="http://www.w3.org/2000/svg"
+        <div className="row no-gutters justify-content-center">
+          <div className="col align-self-center">
+            <svg
+              version="1.1"
+              baseProfile="full"
+              height="100%"
+              viewBox="0 0 100 100"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+
+              {/* Background */}
+              <rect width="100" height="100" fill="black" />
+
+              {/* Space ship */}
+              {_.map(ships, (data) =>
+                <SpaceShip {...data} />
+              )}
+
+              {/* Asteroids */}
+              {_.map(asteroids, (data) =>
+                <Asteroid {...data} />
+              )}
+
+              {/* Bullets */}
+              {_.map(bullets, (bullet) => (
+                <Bullet {...bullet} />
+              ))}
+
+            </svg>
+          </div>
+        </div>
+
+        <div className="row no-gutters justify-content-center position-absolute"
+          style={{
+            bottom: '50px',
+          }}
         >
-
-          {/* Background */}
-          <rect width="100" height="100" fill="black" />
-
-          {/* Space ship */}
-          {_.map(ships, (data) =>
-            <SpaceShip {...data} />
-          )}
-
-          {/* Asteroids */}
-          {_.map(asteroids, (data) =>
-            <Asteroid {...data} />
-          )}
-
-          {/* Bullets */}
-          {_.map(bullets, (bullet) => (
-            <Bullet {...bullet} />
-          ))}
-
-        </svg>
-
-        {this.getButtonInterface()}
-
+          <div className="col">
+            { isMobileDevice() ? this.getButtonInterface() :
+                <button
+                  className="btn"
+                  style={{
+                  }}
+                  onClick={(e) => {
+                    e.preventDefault()
+                    this.props.reset()
+                  }}
+                  onTouchStart={(e) => {
+                    e.preventDefault()
+                    this.props.reset()
+                  }}
+                >
+                  RESET
+                </button>
+            }
+          </div>
+        </div>
       </div>
     )
   }
