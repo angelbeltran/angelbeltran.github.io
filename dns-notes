@@ -1,0 +1,4 @@
+NAME    TYPE    TTL   DATA
+@       a       1h    192.30.252.152
+                      192.30.252.153
+www     CNAME   1h    angelbeltran.com

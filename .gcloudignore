@@ -1,0 +1,11 @@
+.gcloudignore
+.git
+.gitignore
+node_modules/
+
+CNAME
+public/
+README.md
+service-worker.js
+src/
+
