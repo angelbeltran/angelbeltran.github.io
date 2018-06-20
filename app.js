@@ -9,13 +9,15 @@ app.use(morgan(':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:htt
 
 // all routes served from save static html
 const staticMiddleware = express.static('build');
-['/', '/home', '/about', '/contact', '/fun-stuff'].forEach(function (route) {
+ app.use('/', staticMiddleware);
+['/home', '/about', '/contact', '/fun-stuff'].forEach(function (route) { // recognized routes
   app.use(route, staticMiddleware);
+  app.use(route + '/*', staticMiddleware);
 });
 
-// unrecognizes routes get redirected to the top route
+// unrecognizes routes get redirected to home
 app.get('*', function (req, res) {
-  res.redirect('/');
+  res.redirect('/home');
 });
 
 // Start the server
