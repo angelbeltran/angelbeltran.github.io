@@ -37,7 +37,7 @@ class Navbar extends Component {
             <CustomNavListItemLink to="/about">About</CustomNavListItemLink>
             <CustomNavListItemLink to="/contact">Contact</CustomNavListItemLink>
 
-            <CustomNavListItemDropdown label="Fun Stuff">
+            <CustomNavListItemDropdown to="/fun-stuff" label="Fun Stuff">
               <Link to="/fun-stuff/asteroids" className="dropdown-item">Asteroids</Link>
               <Link to="/fun-stuff/force-directed-graph" className="dropdown-item">Force-Directed Graph</Link>
               <Link to="/fun-stuff/game-of-life" className="dropdown-item">Game of Life</Link>
@@ -72,17 +72,43 @@ const CustomNavListItemLink = ({ children, to, activeOnlyWhenExact }) => (
   />
 );
 
+class CustomNavListItemDropdown extends Component { 
+  constructor(props) {
+    super(props);
 
-const CustomNavListItemDropdown = ({ children, label }) => (
-  <li className="nav-item dropdown">
-    <a className="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-      {label}
-    </a>
-    <div className="dropdown-menu" aria-labelledby="navbarDropdown">
-      {children}
-    </div>
-  </li>
-);
+    this.toggleDropdown = this.toggleDropdown.bind(this);
+    this.state = {
+      expanded: false,
+    };
+  }
+
+  toggleDropdown() {
+    this.setState({
+      expanded: !this.state.expanded,
+    })
+  }
+
+  render() {
+    const expanded = this.state.expanded;
+
+    return (
+      <Route
+        path={this.props.to}
+        children={({ match }) => (
+          <li className={`nav-item dropdown ${ match ? 'active' : '' }`}>
+            <a onClick={this.toggleDropdown} className="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              {this.props.label}
+            </a>
+            <div onClick={this.toggleDropdown} className={`dropdown-menu ${expanded ? 'show' : '' }`} aria-labelledby="navbarDropdown">
+              {this.props.children}
+            </div>
+          </li>
+        )}
+      />
+
+    );
+  }
+}
 
 
 export default Navbar;
