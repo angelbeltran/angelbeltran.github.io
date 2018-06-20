@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Route } from 'react-router-dom';
+import { Route, Link, Switch, Redirect } from 'react-router-dom';
 import logo from './logo.svg';
 import Asteroids from './asteroids';
 import GameOfLife from './game-of-life';
@@ -246,48 +246,60 @@ class GraphWrapper extends Component {
 }
 
 
+const CustomNavListItemLink = ({ children, to, activeOnlyWhenExact }) => (
+  <Route
+    path={to}
+    exact={activeOnlyWhenExact}
+    children={({ match }) => (
+      <li className={ match ? "nav-item active" : "nav-item"}>
+        <Link to={to} className="nav-link">
+          {children}
+          { match ? <span className="sr-only">(current)</span> : "" }
+        </Link>
+      </li>
+    )}
+  />
+);
+
+
+const CustomNavListItemDropdown = ({ children, label }) => (
+  <li className="nav-item dropdown">
+    <a className="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      {label}
+    </a>
+    <div className="dropdown-menu" aria-labelledby="navbarDropdown">
+      {children}
+    </div>
+  </li>
+);
+
+
 class App extends Component {
   render() {
     return (
       <div className="container-fluid p-0 m-0">
 
         <nav className="navbar navbar-expand-md navbar-light bg-light">
-          <a className="navbar-brand" href="/home">
+          <Link to="/home" className="navbar-brand">
             <img alt="portrait" className="d-block" width="48" height="48" src={logo}/>
-          </a>
+          </Link>
           <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span className="navbar-toggler-icon"></span>
           </button>
 
           <div className="collapse navbar-collapse" id="navbarSupportedContent">
             <ul className="navbar-nav mr-auto">
-              <li className="nav-item active">
-                <a className="nav-link" href="/home">Home <span className="sr-only">(current)</span></a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link" href="/about">About</a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link" href="/contact">Contact</a>
-              </li>
-              <li className="nav-item dropdown">
-                <a className="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  Fun Stuff
-                </a>
-                <div className="dropdown-menu" aria-labelledby="navbarDropdown">
-                
-                  <a className="dropdown-item" href="/asteroids">Asteroids</a>
-                  <a className="dropdown-item" href="/force-directed-graph">Force-Directed Graph</a>
-                  <a className="dropdown-item" href="/game-of-life">Game of Life</a>
-                  <a className="dropdown-item" href="/maze">Maze</a>
-                  <a className="dropdown-item" href="/tetris">Tetris</a>
+              <CustomNavListItemLink to="/home">Home</CustomNavListItemLink>
+              <CustomNavListItemLink to="/about">About</CustomNavListItemLink>
+              <CustomNavListItemLink to="/contact">Contact</CustomNavListItemLink>
 
-                  <div className="dropdown-divider"></div>
-
-                  <a className="dropdown-item" href="/">Something else here</a>
-
-                </div>
-              </li>
+              <CustomNavListItemDropdown label="Fun Stuff">
+                <Link to="/fun-stuff/asteroids" className="dropdown-item">Asteroids</Link>
+                <Link to="/fun-stuff/force-directed-graph" className="dropdown-item">Force-Directed Graph</Link>
+                <Link to="/fun-stuff/game-of-life" className="dropdown-item">Game of Life</Link>
+                <Link to="/fun-stuff/maze" className="dropdown-item">Maze</Link>
+                <Link to="/fun-stuff/tetris" className="dropdown-item">Tetris</Link>
+              </CustomNavListItemDropdown>
             </ul>
 
             <form className="form-inline my-2 my-lg-0">
@@ -299,11 +311,80 @@ class App extends Component {
 
         <div className="row no-gutters">
           <div className="col">
-            <Route path="/asteroids" component={Asteroids} />
-            <Route path="/force-directed-graph" component={GraphWrapper} />
-            <Route path="/game-of-life" component={GameOfLifeWrapper} />
-            <Route path="/maze" component={Maze3D} />
-            <Route path="/tetris" component={Tetris} />
+            <Switch>
+              <Route path="/home" render={() => (
+                <Switch>
+                  <Route exact path="/home" render={() => (
+                    <div>
+                    </div>
+                  )} />
+                  <Redirect to="/home" />
+                </Switch>
+              )} />
+
+              <Route path="/about" render={() => (
+                <Switch>
+                  <Route exact path="/about" render={() => (
+                    <div>
+                    </div>
+                  )} />
+                  <Redirect to="/about" />
+                </Switch>
+              )} />
+
+              <Route path="/contact" render={() => (
+                <Switch>
+                  <Route exact path="/contact" render={() => (
+                    <div>
+                    </div>
+                  )} />
+                  <Redirect to="/contact" />
+                </Switch>
+              )} />
+
+              <Route path="/fun-stuff" render={() => (
+                <Switch>
+                  <Route path="/fun-stuff/asteroids" render={() => (
+                    <Switch>
+                      <Route exact path="/fun-stuff/asteroids" component={Asteroids}/>
+                      <Redirect to="/fun-stuff/asteroids" />
+                    </Switch>
+                  )} />
+
+                  <Route path="/fun-stuff/force-directed-graph" render={() => (
+                    <Switch>
+                      <Route exact path="/fun-stuff/force-directed-graph" component={GraphWrapper}/>
+                      <Redirect to="/fun-stuff/force-directed-graph" />
+                    </Switch>
+                  )} />
+
+                  <Route path="/fun-stuff/game-of-life" render={() => (
+                    <Switch>
+                      <Route exact path="/fun-stuff/game-of-life" component={GameOfLifeWrapper}/>
+                      <Redirect to="/fun-stuff/game-of-life" />
+                    </Switch>
+                  )} />
+
+                  <Route path="/fun-stuff/maze" render={() => (
+                    <Switch>
+                      <Route exact path="/fun-stuff/maze" component={Maze3D}/>
+                      <Redirect to="/fun-stuff/maze" />
+                    </Switch>
+                  )} />
+
+                  <Route path="/fun-stuff/tetris" render={() => (
+                    <Switch>
+                      <Route exact path="/fun-stuff/tetris" component={Tetris}/>
+                      <Redirect to="/fun-stuff/tetris" />
+                    </Switch>
+                  )} />
+
+                  <Redirect to="/" />
+                </Switch>
+              )} />
+
+              <Redirect from="/" to="/home" />
+            </Switch>
           </div>
         </div>
       </div>
