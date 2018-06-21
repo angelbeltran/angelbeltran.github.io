@@ -4,15 +4,18 @@ import AspectRatio from 'react-aspect-ratio';
 import portrait from './uoregon.jpg';
 
 
-class HomePage extends Component {
+class AboutPage extends Component {
   componentDidMount() {
-    fetch('http://localhost:8080/api/about/random-fact/?quantity=3', { mode: 'cors' })
-      .then(res => res.json())
-      .then(facts => {
-        this.setState({
-          facts: facts,
+    if (!this.props.facts) {
+      // fetch random facts for the first time
+      fetch('http://localhost:8080/api/about/random-fact/?quantity=3', { mode: 'cors' })
+        .then(res => res.json())
+        .then(facts => {
+          this.props.setGlobalState({
+            facts: facts,
+          });
         });
-      });
+    }
   }
 
   render() {
@@ -20,15 +23,13 @@ class HomePage extends Component {
       <div className="container pt-4">
         <div className="row d-flex">
           <div className="col-sm-7 col-md-8 d-flex flex-column align-items-center justify-content-center text-center">
+            <strong>Random Facts</strong>
+            <hr />
 
-            <p>
-              If you're thinking there's not much here, you might be right.
-              Otherwise, I'm flattered you stopped by.
-            </p>
-            <p>
-              This is my personal site and is under contruction.
-              Feel free to wander.
-            </p>
+            { this.props.facts && this.props.facts.map(fact => (
+                <p key={fact}>{fact}</p>
+              ))
+            }
 
           </div>
 
@@ -47,4 +48,4 @@ class HomePage extends Component {
 }
 
 
-export default HomePage;
+export default AboutPage;

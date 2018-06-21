@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import Navbar from './Navbar';
 import HomePage from './Home';
+import AboutPage from './About';
+import ContactPage from './Contact';
 import Asteroids from './Asteroids';
 import GameOfLife from './GameOfLife';
 import Graph from './Graph';
@@ -10,6 +12,44 @@ import Tetris from './Tetris';
 
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+
+    this.setHomeState = this.setHomeState.bind(this);
+    this.setAboutState = this.setAboutState.bind(this);
+    this.setContactState = this.setContactState.bind(this);
+
+    this.state = {
+      home: {},
+      about: {},
+      contact: {},
+    };
+  }
+
+  setHomeState(update) {
+    if (update && typeof update === 'object') {
+      this.setState({
+        home: update,
+      });
+    }
+  }
+
+  setAboutState(update) {
+    if (update && typeof update === 'object') {
+      this.setState({
+        about: update,
+      });
+    }
+  }
+
+  setContactState(update) {
+    if (update && typeof update === 'object') {
+      this.setState({
+        contact: update,
+      });
+    }
+  }
+
   render() {
     return (
       <div className="container-fluid p-0 m-0">
@@ -30,8 +70,7 @@ class App extends Component {
               <Route path="/about" render={() => (
                 <Switch>
                   <Route exact path="/about" render={() => (
-                    <div>
-                    </div>
+                    <AboutPage {...this.state.about} setGlobalState={this.setAboutState} />
                   )} />
                   <Redirect to="/about" />
                 </Switch>
@@ -40,8 +79,7 @@ class App extends Component {
               <Route path="/contact" render={() => (
                 <Switch>
                   <Route exact path="/contact" render={() => (
-                    <div>
-                    </div>
+                    <ContactPage {...this.state.contact} setGlobalState={this.setContactState} />
                   )} />
                   <Redirect to="/contact" />
                 </Switch>
