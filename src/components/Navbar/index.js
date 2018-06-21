@@ -6,11 +6,11 @@ import logo from './logo.svg';
 class Navbar extends Component {
   constructor(props) {
     super(props);
-      this.toggleNavbar = this.toggleNavbar.bind(this);
-      this.state = {
-        collapsed: true,
-      };
-    }
+    this.toggleNavbar = this.toggleNavbar.bind(this);
+    this.state = {
+      collapsed: true,
+    };
+  }
 
   toggleNavbar() {
     this.setState({
@@ -80,12 +80,32 @@ class CustomNavListItemDropdown extends Component {
     super(props);
 
     this.toggleDropdown = this.toggleDropdown.bind(this);
+    this.handleClickOutsideOfDropdown = this.handleClickOutsideOfDropdown.bind(this);
+
     this.state = {
       expanded: false,
     };
   }
 
-  toggleDropdown() {
+  componentDidMount() {
+    window.addEventListener('click', this.handleClickOutsideOfDropdown);
+  }
+
+  componentWillMount() {
+    window.removeEventListener('click', this.handleClickOutsideOfDropdown);
+  }
+
+  handleClickOutsideOfDropdown() {
+    if (this.state.expanded) {
+      this.setState({
+        expanded: false,
+      });
+    }
+  }
+
+  toggleDropdown(e) {
+    e.stopPropagation(); // so the dropdown isn't immediately close upon opening.
+
     this.setState({
       expanded: !this.state.expanded,
     })
