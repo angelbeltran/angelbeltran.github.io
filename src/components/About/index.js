@@ -8,7 +8,7 @@ class AboutPage extends Component {
   componentDidMount() {
     if (!this.props.facts) {
       // fetch random facts for the first time
-      fetch('http://localhost:8080/api/about/random-fact/?quantity=3', { mode: 'cors' })
+      fetch('http://angelbeltran.com/api/about/random-fact/?quantity=3')
         .then(res => res.json())
         .then(facts => {
           this.props.setGlobalState({

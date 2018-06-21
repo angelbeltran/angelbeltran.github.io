@@ -5,16 +5,6 @@ import portrait from './uoregon.jpg';
 
 
 class HomePage extends Component {
-  componentDidMount() {
-    fetch('http://localhost:8080/api/about/random-fact/?quantity=3', { mode: 'cors' })
-      .then(res => res.json())
-      .then(facts => {
-        this.setState({
-          facts: facts,
-        });
-      });
-  }
-
   render() {
     return (
       <div className="container pt-4">
