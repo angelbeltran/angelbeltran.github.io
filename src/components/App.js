@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { Route, Switch, Redirect } from 'react-router-dom';
-import Navbar from './navbar';
-import Asteroids from './asteroids';
-import GameOfLife from './game-of-life';
-import Graph from './graph';
-import Maze3D from './maze';
-import Tetris from './tetris';
+import Navbar from './Navbar';
+import Asteroids from './Asteroids';
+import GameOfLife from './GameOfLife';
+import Graph from './Graph';
+import Maze3D from './Maze';
+import Tetris from './Tetris';
 
 
 class GameOfLifeWrapper extends Component {
