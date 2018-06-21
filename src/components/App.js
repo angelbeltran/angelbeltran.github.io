@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import Navbar from './Navbar';
+import HomePage from './Home';
 import Asteroids from './Asteroids';
 import GameOfLife from './GameOfLife';
 import Graph from './Graph';
@@ -21,10 +22,7 @@ class App extends Component {
 
               <Route path="/home" render={() => (
                 <Switch>
-                  <Route exact path="/home" render={() => (
-                    <div>
-                    </div>
-                  )} />
+                  <Route exact path="/home" component={HomePage} />
                   <Redirect to="/home" />
                 </Switch>
               )} />
