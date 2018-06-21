@@ -219,4 +219,161 @@ class Grid extends Component {
 }
 
 
-export default Grid
+class GameOfLife extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      paused: false,
+      protected: false,
+      savedGrid: null,
+      rows: 20,
+      columns: 20,
+    }
+  }
+
+  pause = () => {
+    this.setState({ paused: !this.state.paused })
+  }
+
+  protect = () => {
+    this.setState({ protected: !this.state.protected })
+  }
+
+  saveGrid = (grid) => {
+    this.setState({ savedGrid: grid })
+  }
+
+  updateRows = (n) => {
+    if (n < 0) {
+      this.setState({ rows: 0 })
+    } else {
+      this.setState({ rows: n })
+    }
+  }
+
+  updateColumns = (n) => {
+    if (n < 0) {
+      this.setState({ columns: 0 })
+    } else {
+      this.setState({ columns: n })
+    }
+  }
+
+  getClearPromise = () => {
+    let _resolve
+
+    const createClearPromise = () => {
+      return new Promise((resolve) => {
+        _resolve = resolve
+        if (this.state.clear !== clear) {
+          this.setState({ clear })
+        }
+      })
+    }
+
+    function clear () {
+      const resolve = _resolve
+      resolve(createClearPromise)
+    }
+
+    return createClearPromise()
+  }
+
+  getResetPromise = () => {
+    let _resolve
+
+    const createResetPromise = () => {
+      return new Promise((resolve) => {
+        _resolve = resolve
+        if (this.state.reset !== reset) {
+          this.setState({ reset })
+        }
+      })
+    }
+
+    function reset () {
+      const resolve = _resolve
+      resolve(createResetPromise)
+    }
+
+    return createResetPromise()
+  }
+
+  render() {
+    return (
+      <div style={{
+        width: '100%',
+        height: '80%',
+        //position: 'absolute',
+        //top: '10%',
+        //left: '10%',
+        //backgroundColor: '#cceedd',
+      }}>
+        <Grid
+          width="100%"
+          height="100%"
+          rows={this.state.rows}
+          columns={this.state.columns}
+          startingGrid={this.state.savedGrid}
+          paused={this.state.paused}
+          protected={this.state.protected}
+          saveGrid={this.saveGrid}
+          clear={this.getClearPromise}
+          reset={this.getResetPromise}
+        />
+
+        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around', flexWrap: 'wrap' }}>
+          <div>
+            <button onClick={this.pause}>
+              {this.state.paused ? 'unpause' : 'pause'}
+            </button>
+            <button onClick={this.protect}>
+              {this.state.protected ? 'unprotect' : 'protect'}
+            </button>
+            <button onClick={this.state.clear}>clear</button>
+            <button onClick={this.state.reset}>reset</button>
+          </div>
+
+          <div>
+            rows: <input
+              type="number"
+              value={this.state.rows}
+              onChange={(e) => this.updateRows(e.target.value)}
+            />
+            <button
+              onClick={() => this.updateRows(this.state.rows - 1)}
+            >
+              -
+            </button>
+            <button
+              onClick={() => this.updateRows(this.state.rows + 1)}
+            >
+              +
+            </button>
+          </div>
+
+          <div>
+            columns: <input
+              type="number"
+              value={this.state.columns}
+              onChange={(e) => this.updateColumns(e.target.value)}
+            />
+            <button
+              onClick={() => this.updateColumns(this.state.columns - 1)}
+            >
+              -
+            </button>
+            <button
+              onClick={() => this.updateColumns(this.state.columns + 1)}
+            >
+              +
+            </button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+}
+
+
+export default GameOfLife;
