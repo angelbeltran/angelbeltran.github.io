@@ -147,7 +147,7 @@ export function* clock () {
       const targetFrameRate = yield select((s) => s.frameRate)
 
       if ((Math.abs(targetFrameRate - approxFrameRate) / targetFrameRate) > 0.2) {
-        console.log('new target frame rate:', approxFrameRate)
+        //console.log('new target frame rate:', approxFrameRate)
         yield put(setFrameRate(approxFrameRate))
       }
     }

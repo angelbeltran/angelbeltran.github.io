@@ -18,6 +18,7 @@ class App extends Component {
     this.setHomeState = this.setHomeState.bind(this);
     this.setAboutState = this.setAboutState.bind(this);
     this.setContactState = this.setContactState.bind(this);
+    this.setNavRef = this.setNavRef.bind(this);
 
     this.state = {
       home: {},
@@ -50,13 +51,28 @@ class App extends Component {
     }
   }
 
+  setNavRef(element) {
+    if (element && this.state.navHeight !== element.clientHeight) {
+      this.setState({
+        navHeight: element.clientHeight,
+      });
+    }
+  }
+
   render() {
+    const navHeight = this.state.navHeight || 0;
+    const bodyStyle = {};
+
+    if (this.props.location && this.props.location.pathname.indexOf('/fun-stuff') === 0) {
+      bodyStyle.maxHeight = `calc(100vh - ${navHeight + 3}px)`;
+    }
+
     return (
       <div className="container-fluid p-0 m-0">
 
-        <Navbar />
+        <Navbar setNavRef={this.setNavRef}/>
 
-        <div className="row no-gutters">
+        <div className="row no-gutters" style={bodyStyle} >
           <div className="col">
             <Switch>
 
@@ -90,7 +106,9 @@ class App extends Component {
 
                   <Route path="/fun-stuff/asteroids" render={() => (
                     <Switch>
-                      <Route exact path="/fun-stuff/asteroids" component={Asteroids}/>
+                      <Route exact path="/fun-stuff/asteroids" render={() => (
+                        <Asteroids navHeight={navHeight} />
+                      )}/>
                       <Redirect to="/fun-stuff/asteroids" />
                     </Switch>
                   )} />

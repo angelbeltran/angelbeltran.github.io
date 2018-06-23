@@ -6,7 +6,9 @@ import logo from './logo.svg';
 class Navbar extends Component {
   constructor(props) {
     super(props);
+
     this.toggleNavbar = this.toggleNavbar.bind(this);
+
     this.state = {
       collapsed: true,
     };
@@ -22,7 +24,7 @@ class Navbar extends Component {
     const collapsed = this.state.collapsed;
 
     return (
-      <nav className="navbar navbar-expand-md navbar-light bg-light">
+      <nav className="navbar navbar-expand-md navbar-light bg-light" ref={this.props.setNavRef} >
         <Link to="/home" className="navbar-brand">
           <img alt="portrait" className="d-block" width="48" height="48" src={logo}/>
         </Link>

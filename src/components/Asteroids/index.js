@@ -4,10 +4,11 @@ import App from './App';
 import store from './store';
 
 
-export default function Game() {
+// TODO: consider some rewrite?
+export default function Game(props) {
   return (
     <Provider store={store}>
-      <App />
+      <App {...props} />
     </Provider>
   );
 }

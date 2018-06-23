@@ -337,43 +337,39 @@ class GameScreen extends Component {
     const asteroids = this.getRenderList(this.props.asteroids)
     const bullets = this.getRenderList(this.props.bullets)
 
-    // TODO: make the height the of the container or page the limiting factor in the dimensions of the svg
     return (
-      <div
-        className="container-fluid m-0 p-0"
+      <svg
+        version="1.1"
+        baseProfile="full"
+        width="100%" height="100%"
+        viewBox="0 0 100 100"
+        xmlns="http://www.w3.org/2000/svg"
       >
-        <div className="row no-gutters justify-content-center">
-          <div className="col align-self-center">
-            <svg
-              version="1.1"
-              baseProfile="full"
-              height="100%"
-              viewBox="0 0 100 100"
-              xmlns="http://www.w3.org/2000/svg"
-            >
 
-              {/* Background */}
-              <rect width="100" height="100" fill="black" />
+        {/* Background */}
+        <rect width="100" height="100" fill="black" />
 
-              {/* Space ship */}
-              {_.map(ships, (data) =>
-                <SpaceShip {...data} />
-              )}
+        {/* Space ship */}
+        {_.map(ships, (data) =>
+          <SpaceShip {...data} />
+        )}
 
-              {/* Asteroids */}
-              {_.map(asteroids, (data) =>
-                <Asteroid {...data} />
-              )}
+        {/* Asteroids */}
+        {_.map(asteroids, (data) =>
+          <Asteroid {...data} />
+        )}
 
-              {/* Bullets */}
-              {_.map(bullets, (bullet) => (
-                <Bullet {...bullet} />
-              ))}
+        {/* Bullets */}
+        {_.map(bullets, (bullet) => (
+          <Bullet {...bullet} />
+        ))}
 
-            </svg>
-          </div>
-        </div>
+      </svg>
+    )
+  }
+}
 
+/*
         <div className="row no-gutters justify-content-center position-absolute"
           style={{
             bottom: '50px',
@@ -399,10 +395,7 @@ class GameScreen extends Component {
             }
           </div>
         </div>
-      </div>
-    )
-  }
-}
+ */
 
 export default GameScreen
 
