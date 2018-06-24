@@ -41,4 +41,5 @@ export default {
   nextBulletId: 1,
 
   frameRate: 1, // TODO: set constants somewhere
+  paused: false,
 }

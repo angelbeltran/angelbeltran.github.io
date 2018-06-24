@@ -13,3 +13,15 @@ export function reset () {
     type: constants.RESET,
   }
 }
+
+export function pause () {
+  return {
+    type: constants.PAUSE,
+  }
+}
+
+export function unpause () {
+  return {
+    type: constants.UNPAUSE,
+  }
+}

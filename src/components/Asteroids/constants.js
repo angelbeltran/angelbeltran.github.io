@@ -50,3 +50,5 @@ export const STOP_FIRING_FROM_SHIP = 'actions/STOP_FIRING_FROM_SHIP'
 //    experience
 export const SET_FRAME_RATE = 'actions/SET_FRAME_RATE'
 export const RESET = 'actions/RESET'
+export const PAUSE = 'actions/PAUSE'
+export const UNPAUSE = 'actions/UNPAUSE'

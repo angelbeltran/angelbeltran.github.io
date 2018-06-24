@@ -1,16 +1,20 @@
 import React, { Component } from 'react'
 import _ from 'lodash'
-import { style, LEFT, RIGHT, FORWARD, BACKWARD } from './constants'
+import { LEFT, RIGHT, FORWARD, BACKWARD } from './constants'
 
 import SpaceShip from './components/SpaceShip'
 import Asteroid from './components/Asteroid'
 import Bullet from './components/Bullet'
 
+import './GameScreen.css';
+
 
 // TODO: find a way to allow for multiplayer / map different direction keys to different ship actions
+/*
 function isMobileDevice() {
   return (typeof window.orientation !== "undefined") || (navigator.userAgent.indexOf('IEMobile') !== -1);
 }
+*/
 
 class GameScreen extends Component {
   constructor(props) {
@@ -23,61 +27,75 @@ class GameScreen extends Component {
     document.addEventListener('keyup', this.handleKeyUp)
   }
 
+  componentDidMount() {
+    this.props.unpause();
+  }
+
   componentWillUnmount() {
     document.removeEventListener('keydown', this.handleKeyDown)
     document.removeEventListener('keyup', this.handleKeyUp)
+
+    this.props.pause();
   }
   
   handleKeyDown(e) {
     const code = e.keyCode
+    const shipIds = _.map(this.props.ships, (ship, key) => key);
 
-    _.each(this.props.ships, (ship, key) => {
-      switch (code) {
-        case 37:
-          this.props.startTurningShip(key, LEFT)
-          break
-        case 39:
-          this.props.startTurningShip(key, RIGHT)
-          break
-        case 38:
-          this.props.startAcceleratingShip(key, FORWARD)
-          break
-        case 40:
-          this.props.startAcceleratingShip(key, BACKWARD)
-          break
-        case 32:
-          this.props.startFiringFromShip(key)
-          break
-        default:
-          break
-      }
-    })
+    switch (code) {
+      case 37: // left arrow
+        _.each(shipIds, id => this.props.startTurningShip(id, LEFT));
+        break;
+      case 39: // right arrow
+        _.each(shipIds, id => this.props.startTurningShip(id, RIGHT));
+        break;
+      case 38: // up arrow
+        _.each(shipIds, id => this.props.startAcceleratingShip(id, FORWARD));
+        break;
+      case 40: // down arrow
+        _.each(shipIds, id => this.props.startAcceleratingShip(id, BACKWARD));
+        break;
+      case 32: // space bar
+        _.each(shipIds, id => this.props.startFiringFromShip(id));
+        break;
+      case 80: // p key
+        if (this.props.paused) {
+          this.props.unpause();
+        } else {
+          this.props.pause();
+        }
+        break;
+      case 82: // r key
+        this.props.reset();
+        break;
+      default:
+        break;
+    }
   }
 
   handleKeyUp(e) {
     const code = e.keyCode
+    const shipIds = _.map(this.props.ships, (ship, key) => key);
 
-    _.each(this.props.ships, (ship, key) => {
-      switch (code) {
-        case 37:
-          this.props.stopTurningShip(key, LEFT)
-          break
-        case 39:
-          this.props.stopTurningShip(key, RIGHT)
-          break
-        case 38:
-          this.props.stopAcceleratingShip(key, FORWARD)
-          break
-        case 40:
-          this.props.stopAcceleratingShip(key, BACKWARD)
-          break
-        case 32:
-          this.props.stopFiringFromShip(key)
-          break
-        default:
-          break
-      }
-    })
+    switch (code) {
+      case 37:
+        _.each(shipIds, id => this.props.stopTurningShip(id, LEFT));
+        break
+      case 39:
+        _.each(shipIds, id => this.props.stopTurningShip(id, RIGHT));
+        break
+      case 38:
+        _.each(shipIds, id => this.props.stopAcceleratingShip(id, FORWARD));
+        break
+      case 40:
+        _.each(shipIds, id => this.props.stopAcceleratingShip(id, BACKWARD));
+        break
+      case 32:
+        _.each(shipIds, id => this.props.stopFiringFromShip(id));
+        break
+      default:
+        break;
+    }
   }
 
   handleDirectionButtonMouseDownOrTouchStart = (direction) => {
@@ -134,12 +152,13 @@ class GameScreen extends Component {
     })
   }
 
-  getRenderList = (entities) => {
+  getRenderedObjectList = (entities) => {
     return _.reduce(entities, (list, entity) => {
       list.push(entity)
 
       let { position: { x, y } } = entity
 
+      // duplicate to display on other horizontal end
       let hDuplicate
       if (x + entity.scale >= 100) { // TODO: save screen size to constants file?
         hDuplicate = { x: x - 100, y }
@@ -147,6 +166,7 @@ class GameScreen extends Component {
         hDuplicate = { x: x + 100, y }
       }
 
+      // duplicate to display on other vertical end
       let vDuplicate
       if (y + entity.scale >= 100) { // TODO: save screen size to constants file?
         vDuplicate = { x, y: y - 100 }
@@ -154,6 +174,7 @@ class GameScreen extends Component {
         vDuplicate = { x, y: y + 100 }
       }
 
+      // duplicate to display at opposite corner
       let dDuplicate
       if (hDuplicate && vDuplicate) {
         dDuplicate = { x: hDuplicate.x, y: vDuplicate.y }
@@ -333,9 +354,9 @@ class GameScreen extends Component {
   render() {
     //checkForCollisions(this.state.ship, this.state.asteroids)
     // duplicate ships, asteroids, and bullets that are near the edges
-    const ships = this.getRenderList(this.props.ships)
-    const asteroids = this.getRenderList(this.props.asteroids)
-    const bullets = this.getRenderList(this.props.bullets)
+    const ships = this.getRenderedObjectList(this.props.ships);
+    const asteroids = this.getRenderedObjectList(this.props.asteroids);
+    const bullets = this.getRenderedObjectList(this.props.bullets);
 
     return (
       <svg
@@ -363,6 +384,19 @@ class GameScreen extends Component {
         {_.map(bullets, (bullet) => (
           <Bullet {...bullet} />
         ))}
+
+        <text x="2" y="95" fill="#888888" style={{ fontSize: '2.5px' }}>
+          p to pause 
+        </text>
+        <text x="2" y="98" fill="#888888" style={{ fontSize: '2.5px' }}>
+          r to restart
+        </text>
+
+        { this.props.paused && (
+          <text className="paused-display" x="50" y="50" fill="#aaaaaa" style={{ fontSize: '4px' }} textAnchor="middle" >
+            Paused
+          </text>
+        )}
 
       </svg>
     )

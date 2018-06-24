@@ -12,7 +12,29 @@ export default function (state = initialState, action) {
     }
 
     case constants.RESET: {
-      return initialState
+      return initialState;
+    }
+
+    case constants.PAUSE: {
+      if (state.paused) {
+        return state;
+      } else {
+        return {
+          ...state,
+          paused: true,
+        };
+      }
+    }
+
+    case constants.UNPAUSE: {
+      if (state.paused) {
+        return {
+          ...state,
+          paused: false,
+        };
+      } else {
+        return state;
+      }
     }
 
     default:

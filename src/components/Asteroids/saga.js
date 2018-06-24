@@ -108,19 +108,10 @@ export function* clock () {
   function setNextTick (ms) {
     nextTick = setTimeout(() => {
       outerResolve()
-      //createIntervalPromise()
-      //setNextTick(ms)
     }, ms)
   }
 
   setNextTick(intervalLength)
-
-  /*
-  let interval = setInterval(() => {
-    outerResolve()
-    createIntervalPromise()
-  }, intervalLength)
-  */
 
   const dummyTimeStamp = Date.now()
   const numTimeStampsInHistory = 10
@@ -131,11 +122,9 @@ export function* clock () {
 
   try {
     while (yield intervalOccured) {
-      // let start = Date.now()
       createIntervalPromise()
       setNextTick(intervalLength)
       yield call(tick)
-      // let finish = Date.now()
 
       const oldestTimeStamp = timeStamps.shift()
       const currentTimeStamp = Date.now()
@@ -152,12 +141,16 @@ export function* clock () {
       }
     }
   } finally {
-    // clearInterval(interval)
     clearTimeout(nextTick)
   }
 }
 
 export function* tick () {
+  if (yield select(s => s.paused)) {
+    // if paused. not much to do
+    return;
+  }
+
   yield call(updateMovements)
 
   yield call(updatePositions)
@@ -284,35 +277,11 @@ export function* destroyAsteroid (asteroid) {
       } else {
         scale = radiusOfSphere(remainingVolume)
         remainingVolume = 0
-        /*
-      } else {
-        break
-        remainingVolume = 0
-        */
       }
 
       newAsteroids.push({
         scale,
       })
-
-      /*
-      if (remainingVolume < volumeOfUnitSphere) {
-        break
-        remainingVolume = 0
-      } else if (remainingVolume < volumeOfDoubleUnitSphere) {
-        scale = radiusOfSphere(remainingVolume)
-        remainingVolume = 0
-      } else {
-        const maxScale = radiusOfSphere(remainingVolume)
-        scale = (Math.random() * (maxScale - 1)) + 1
-        const volume = sphericalVolume(scale)
-        remainingVolume -= volume
-      }
-
-      newAsteroids.push({
-        scale,
-      })
-      */
     }
 
     const totalWidthOfChildAsteroids = newAsteroids.reduce((total, newsteroid) => {

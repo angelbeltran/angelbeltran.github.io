@@ -107,7 +107,7 @@ class App extends Component {
                   <Route path="/fun-stuff/asteroids" render={() => (
                     <Switch>
                       <Route exact path="/fun-stuff/asteroids" render={() => (
-                        <Asteroids navHeight={navHeight} />
+                        <Asteroids />
                       )}/>
                       <Redirect to="/fun-stuff/asteroids" />
                     </Switch>
