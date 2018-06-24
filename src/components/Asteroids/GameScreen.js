@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import _ from 'lodash'
-import { LEFT, RIGHT, FORWARD, BACKWARD } from './constants'
 
 import SpaceShip from './components/SpaceShip'
 import Asteroid from './components/Asteroid'

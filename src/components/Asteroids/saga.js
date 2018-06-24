@@ -5,12 +5,9 @@ import * as constants from './constants'
 import {
   addShip,
   removeShip,
-  startTurningShip,
   turnShip,
-  startAcceleratingShip,
   accelerateShip,
   updateShipPositions,
-  startFiringFromShip,
   setWeaponCooldown,
   decrementShipWeaponCooldown,
 } from './actions/ship'

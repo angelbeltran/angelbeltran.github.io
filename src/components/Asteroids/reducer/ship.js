@@ -130,20 +130,6 @@ export default function (state = initialState, action) {
         ...state,
         ships: updatedShips,
       }
-
-      // TODO: got to update this!
-      // create/update duplicate ships or replace the ship with a duplicate ship, if needed
-      /*
-        const duplicateShips = state.duplicateShips
-      let updatedDuplicateShips
-      ({ ship: updatedShip, duplicateShips: updatedDuplicateShips } = updateDuplicateShips(updatedShip, duplicateShips))
-
-      return {
-        ...state,
-        ship: updatedShip,
-        duplicateShips: updatedDuplicateShips,
-      }
-      */
     }
 
     case constants.SET_WEAPON_COOLDOWN: {
