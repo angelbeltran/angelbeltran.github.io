@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import { delay } from 'redux-saga'
-import { select, put, take, call, fork, spawn, cancel } from 'redux-saga/effects'
+import { select, put, take, call, fork, spawn, cancel, cancelled } from 'redux-saga/effects'
 import * as constants from './constants'
 import {
   addShip,
@@ -43,7 +43,7 @@ export default function* root (difficulty = constants.NORMAL) {
     if (gameTask) {
       yield cancel(gameTask)
     }
-    gameTask = yield call(bootup, difficulty)
+    gameTask = yield fork(bootup, difficulty)
   } while (yield take(constants.RESET))
 }
 
@@ -111,7 +111,9 @@ export function* clock () {
     }, ms)
   }
 
-  setNextTick(intervalLength)
+  setNextTick(intervalLength);
+
+  let spawnedTasks = [];
 
   const dummyTimeStamp = Date.now()
   const numTimeStampsInHistory = 10
@@ -124,7 +126,10 @@ export function* clock () {
     while (yield intervalOccured) {
       createIntervalPromise()
       setNextTick(intervalLength)
-      yield call(tick)
+      const tasks = yield call(tick);
+      if (tasks.length) {
+        spawnedTasks = spawnedTasks.filter(t => t.isRunning()).concat(tasks);
+      }
 
       const oldestTimeStamp = timeStamps.shift()
       const currentTimeStamp = Date.now()
@@ -141,27 +146,45 @@ export function* clock () {
       }
     }
   } finally {
-    clearTimeout(nextTick)
+    clearTimeout(nextTick);
+    for (let i = 0; i < spawnedTasks.length; i += 1) {
+      yield cancel(spawnedTasks[i]);
+    }
   }
 }
 
 export function* tick () {
-  if (yield select(s => s.paused)) {
-    // if paused. not much to do
-    return;
+  let tasks = [];
+
+  try {
+    if (yield select(s => s.paused)) {
+      // if paused. not much to do
+      return;
+    }
+
+    yield call(updateMovements)
+
+    yield call(updatePositions)
+
+    yield call(updateRotations)
+
+    const restartShipTask = yield call(handleCollisions);
+    if (restartShipTask) {
+      tasks.push(restartShipTask);
+    }
+
+    yield call(handleBulletLifecycle)
+
+    yield call(handleWeaponEvents)
+  } finally {
+    if (yield cancelled()) {
+      for (let i = 0; i < tasks.length; i += 1) {
+        yield cancel(tasks[i]);
+      }
+    }
+
+    return tasks;
   }
-
-  yield call(updateMovements)
-
-  yield call(updatePositions)
-
-  yield call(updateRotations)
-
-  yield call(handleCollisions)
-
-  yield call(handleBulletLifecycle)
-
-  yield call(handleWeaponEvents)
 }
 
 export function* updateMovements () {
@@ -194,13 +217,14 @@ export function* updateRotations () {
 }
 
 export function* handleCollisions () {
+  let restartShipTask;
+
   const ships = yield select((s) => _.values(s.ships))
   const asteroids = yield select((s) => _.values(s.asteroids))
 
   for (let i = 0, ship = ships[i]; i < ships.length; i += 1, ship = ships[i]) {
     if (yield call(checkForCollisionBetweenShipAndAsteroids, ship, asteroids)) {
-    // if (yield call(checkForCollisions, ship, asteroids)) {
-      yield spawn(restartShip, ship.key)
+      restartShipTask = yield spawn(restartShip, ship.key)
     }
   }
 
@@ -214,6 +238,8 @@ export function* handleCollisions () {
       yield call(destroyAsteroid, asteroid)
     }
   }
+
+  return restartShipTask;
 }
 
 export function* restartShip (key) {
