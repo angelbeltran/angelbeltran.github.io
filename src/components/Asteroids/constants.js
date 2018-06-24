@@ -48,7 +48,11 @@ export const START_FIRING_FROM_SHIP = 'actions/START_FIRING_FROM_SHIP'
 export const STOP_FIRING_FROM_SHIP = 'actions/STOP_FIRING_FROM_SHIP'
 
 //    experience
-export const SET_FRAME_RATE = 'actions/SET_FRAME_RATE'
-export const RESET = 'actions/RESET'
-export const PAUSE = 'actions/PAUSE'
-export const UNPAUSE = 'actions/UNPAUSE'
+export const SET_FRAME_RATE = 'actions/SET_FRAME_RATE';
+export const RESET = 'actions/RESET';
+export const PAUSE = 'actions/PAUSE';
+export const UNPAUSE = 'actions/UNPAUSE';
+
+// keys pressed
+export const KEY_DOWN = 'actions/KEY_DOWN';
+export const KEY_UP = 'actions/KEY_UP';

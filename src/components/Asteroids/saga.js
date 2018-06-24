@@ -1,13 +1,16 @@
 import _ from 'lodash'
 import { delay } from 'redux-saga'
-import { select, put, take, call, fork, spawn, cancel, cancelled } from 'redux-saga/effects'
+import { select, put, take, takeEvery, call, fork, spawn, cancel, cancelled } from 'redux-saga/effects'
 import * as constants from './constants'
 import {
   addShip,
   removeShip,
+  startTurningShip,
   turnShip,
+  startAcceleratingShip,
   accelerateShip,
   updateShipPositions,
+  startFiringFromShip,
   setWeaponCooldown,
   decrementShipWeaponCooldown,
 } from './actions/ship'
@@ -26,7 +29,14 @@ import {
 } from './actions/bullets'
 import {
   setFrameRate,
+  reset,
+  pause,
+  unpause,
 } from './actions/frame-rate'
+import {
+  keyDown,
+  keyUp,
+} from './actions/keys';
 import createShip from './utils/ship'
 import createAsteroid from './utils/asteroid'
 import {
@@ -36,8 +46,12 @@ import {
 // import checkForCollisions from './collision'
 
 
+// TODO: remove the ship.firing, ship.turning, etc. props once we can
+
 export default function* root (difficulty = constants.NORMAL) {
   let gameTask
+
+  yield fork(handlePauseAndResetClicks); // can't have reset click watcher be reset along with the watcher, else a continuous loop of resets will occur while holding the r button
 
   do {
     if (gameTask) {
@@ -51,6 +65,8 @@ export function* bootup (difficulty = constants.NORMAL) {
   yield put(setFrameRate(constants.IDEAL_FRAME_RATE))
 
   yield fork(clock)
+
+  yield fork(watchKeys);
 
   yield call(initializeAsteroids, difficulty)
 
@@ -188,20 +204,26 @@ export function* tick () {
 }
 
 export function* updateMovements () {
-  const ships = yield select((s) => _.values(s.ships))
+  const ships = yield select(s => s.ships);
+  const shipIds = _.map(ships, (ship, key) => key);
+  const keysPressed = yield select(s => s.keysPressed);
+  const paused = yield select(s => s.paused);
 
-  for (let i = 0, ship = ships[i]; i < ships.length; i += 1, ship = ships[i]) {
-    if (ship.turning[constants.LEFT]) {
-      yield put(turnShip(ship.key, constants.LEFT))
-    }
-    if (ship.turning[constants.RIGHT]) {
-      yield put(turnShip(ship.key, constants.RIGHT))
-    }
-    if (ship.accelerating[constants.FORWARD]) {
-      yield put(accelerateShip(ship.key, constants.FORWARD))
-    }
-    if (ship.accelerating[constants.BACKWARD]) {
-      yield put(accelerateShip(ship.key, constants.BACKWARD))
+  if (!paused) {
+    for (let i = 0; i < shipIds.length; i += 1) {
+      const id = shipIds[i];
+      if (keysPressed.ArrowLeft) {
+        yield put(turnShip(id, constants.LEFT));
+      }
+      if (keysPressed.ArrowRight) {
+        yield put(turnShip(id, constants.RIGHT));
+      }
+      if (keysPressed.ArrowUp) {
+        yield put(accelerateShip(id, constants.FORWARD));
+      }
+      if (keysPressed.ArrowDown) {
+        yield put(accelerateShip(id, constants.BACKWARD));
+      }
     }
   }
 }
@@ -363,9 +385,10 @@ export function* handleBulletLifecycle() {
 
 export function* handleWeaponEvents () {
   const ships = yield select((s) => _.values(s.ships))
+  const keysPressed = yield select(s => s.keysPressed);
 
   for (let i = 0, ship = ships[i]; i < ships.length; i += 1, ship = ships[i]) {
-    if (ship.weaponCooldown <= 0 && ship.firing) {
+    if (ship.weaponCooldown <= 0 && keysPressed[' ']) {
       yield put(fireBulletFromShip(ship.key))
       yield put(setWeaponCooldown(ship.key, 20)) // TODO: save constant somewhere
     } else if (ship.weaponCooldown > 0) {
@@ -373,6 +396,76 @@ export function* handleWeaponEvents () {
     }
   }
 }
+
+function* watchKeys () {
+  let actionList;
+  let actionOccured;
+
+  let waitForNextAction;
+  function setUpForNextAction() {
+    waitForNextAction = new Promise(resolve => {
+      actionOccured = () => resolve(true);
+    });
+    actionList = [];
+  }
+  setUpForNextAction();
+
+  function onKeyDown (e) {
+    actionList.push(keyDown(e.key));
+    actionOccured();
+  }
+  function onKeyUp (e) {
+    actionList.push(keyUp(e.key));
+    actionOccured();
+  }
+
+  try {
+    document.addEventListener('keydown', onKeyDown);
+    document.addEventListener('keyup', onKeyUp);
+
+    while (yield waitForNextAction) {
+      for (let i = 0; i < actionList.length; i += 1) {
+        yield put(actionList[i]);
+      }
+      setUpForNextAction();
+    }
+  } finally {
+    document.removeEventListener('keydown', onKeyDown);
+    document.removeEventListener('keyup', onKeyUp);
+  }
+}
+
+export function* handlePauseAndResetClicks() {
+  const keysPressed = yield select(s => s.keysPressed);
+  let rWasUp = !keysPressed.r;
+  let pWasUp = !keysPressed.p;
+
+  yield takeEvery([constants.KEY_DOWN, constants.KEY_UP], function* (action) {
+    const key = action.key;
+
+    if (action.type === constants.KEY_DOWN) {
+      if (key === 'r' && rWasUp) {
+        rWasUp = false;
+        yield put(reset());
+      } else if (key === 'p' && pWasUp) {
+        pWasUp = false;
+
+        if (yield select(s => s.paused)) {
+          yield put(unpause());
+        } else {
+          yield put(pause());
+        }
+      }
+    } else {
+      if (key === 'r') {
+        rWasUp = true;
+      } else if (key === 'p') {
+        pWasUp = true;
+      }
+    }
+  });
+}
+
 
 function getNumberOfInitialAsteroids (difficulty = constants.NORMAL) {
   let numOfAsteroids = 5

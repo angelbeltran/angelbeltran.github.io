@@ -1,7 +1,8 @@
-import shipReducer from './ship'
-import asteroidReducer from './asteroid'
-import bulletReducer from './bullet'
-import frameRateReducer from './frame-rate'
+import shipReducer from './ship';
+import asteroidReducer from './asteroid';
+import bulletReducer from './bullet';
+import frameRateReducer from './frame-rate';
+import keysReducer from './keys';
 
 
 function composeReducers(...reducers) {
@@ -15,4 +16,5 @@ export default composeReducers(
   asteroidReducer,
   bulletReducer,
   frameRateReducer,
-)
+  keysReducer,
+);

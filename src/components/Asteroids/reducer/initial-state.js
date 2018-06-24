@@ -42,4 +42,6 @@ export default {
 
   frameRate: 1, // TODO: set constants somewhere
   paused: false,
+
+  keysPressed: {},
 }
