@@ -15,20 +15,20 @@ export function removeShip (key) {
   }
 }
 
-export function turnShip (key, direction) {
+export function turnShip (key, value) {
   return {
     type: constants.TURN_SHIP,
     key,
-    direction,
-  }
+    value,
+  };
 }
 
-export function accelerateShip (key, direction) {
+export function accelerateShip (key, value) {
   return {
     type: constants.ACCELERATE_SHIP,
     key,
-    direction,
-  }
+    value,
+  };
 }
 
 export function updateShipPositions () {
@@ -48,52 +48,6 @@ export function setWeaponCooldown (key, ticks) {
 export function decrementShipWeaponCooldown (key) {
   return {
     type: constants.DECREMENT_SHIP_WEAPON_COOLDOWN,
-    key,
-  }
-}
-
-export function startTurningShip (key, direction) {
-  return {
-    type: constants.START_TURNING_SHIP,
-    key,
-    direction,
-  }
-}
-
-export function stopTurningShip (key, direction) {
-  return {
-    type: constants.STOP_TURNING_SHIP,
-    key,
-    direction,
-  }
-}
-
-export function startAcceleratingShip (key, direction) {
-  return {
-    type: constants.START_ACCELERATING_SHIP,
-    key,
-    direction,
-  }
-}
-
-export function stopAcceleratingShip (key, direction) {
-  return {
-    type: constants.STOP_ACCELERATING_SHIP,
-    key,
-    direction,
-  }
-}
-
-export function startFiringFromShip (key) {
-  return {
-    type: constants.START_FIRING_FROM_SHIP,
-    key,
-  }
-}
-
-export function stopFiringFromShip (key) {
-  return {
-    type: constants.STOP_FIRING_FROM_SHIP,
     key,
   }
 }

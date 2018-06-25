@@ -15,14 +15,6 @@ export default {
       x: 0,
       y: 0,
     },
-    turning: {
-      [constants.LEFT]: false,
-      [constants.RIGHT]: false,
-    },
-    accelerating: {
-      [constants.FORWARD]: false,
-      [constants.BACKWARD]: false,
-    },
     firing: false,
     weaponCooldown: 0,
   },
@@ -50,4 +42,11 @@ export default {
   mounted: false,
 
   savedGames: {},
+
+  touches: {
+    fire: {},
+    move: {},
+  },
+
+  logs: [], // for logging (particularly for debugging mobile)
 }

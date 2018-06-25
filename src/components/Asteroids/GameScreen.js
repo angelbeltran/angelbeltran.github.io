@@ -17,24 +17,29 @@ class GameScreen extends Component {
     this.handleFocus = this.handleFocus.bind(this);
     this.handleBlur = this.handleBlur.bind(this);
     this.handleClick = this.handleClick.bind(this);
+    this.handleTouchStart = this.handleTouchStart.bind(this);
+    this.handleTouchEnd = this.handleTouchEnd.bind(this);
+    this.handleTouchMove = this.handleTouchMove.bind(this);
+
+    this.state = {};
   }
 
   componentDidMount() {
     this.props.gameDidMount(1); // TODO: manage game ids?
-    this.svg.focus();
+    this.rect.focus();
   }
 
   componentWillUnmount() {
     this.props.gameWillUnmount(); // TODO: eliminate the previous call
-    this.svg = null;
+    this.rect = null;
   }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.gameFocused && !this.props.gameFocused) {
       // recieve focus implicitly, e.g. by pressing the 'p' button to pause/unpause the game
-      if (document.activeElement === this.svg) {
+      if (document.activeElement === this.rect) {
       } else {
-        this.svg.focus();
+        this.rect.focus();
       }
     }
   }
@@ -94,8 +99,8 @@ class GameScreen extends Component {
   }
 
   setFocusHandler(ref) {
-    if (ref && this.svg !== ref) {
-      this.svg = ref;
+    if (ref && this.rect !== ref) {
+      this.rect = ref;
       ref.onfocus = this.handleFocus;
       ref.onblur = this.handleBlur;
     }
@@ -117,8 +122,60 @@ class GameScreen extends Component {
     }
   }
 
+  handleTouchStart(e) {
+    e.preventDefault();
+
+    for (let i = 0; i < e.changedTouches.length; i += 1) {
+      const touch = e.changedTouches[i];
+      const pos = this.getTouchGameCoordinates(e, touch);
+
+      if (pos.x <= 45) {
+        this.props.moveTouchStarted(touch.identifier, pos);
+      } else if (pos.x >= 55) {
+        this.props.fireTouchStarted(touch.identifier);
+      }
+    }
+  }
+
+  handleTouchEnd(e) {
+    e.preventDefault();
+
+    for (let i = 0; i < e.changedTouches.length; i += 1) {
+      const touch = e.changedTouches[i];
+      const pos = this.getTouchGameCoordinates(e, touch);
+
+      if (pos.x <= 45) {
+        this.props.moveTouchEnded(touch.identifier, pos);
+      } else if (pos.x >= 55) {
+        this.props.fireTouchEnded(touch.identifier);
+      }
+    }
+  }
+
+  handleTouchMove(e) {
+    e.preventDefault();
+
+    for (let i = 0; i < e.changedTouches.length; i += 1) {
+      const touch = e.changedTouches[i];
+      const pos = this.getTouchGameCoordinates(e, touch);
+
+      if (pos.x <= 45) {
+        this.props.moveTouchMoved(touch.identifier, pos);
+      }
+    }
+  }
+
+  getTouchGameCoordinates(e, touch) {
+    const rect = e.target.getBoundingClientRect();
+    const x = 100 * (touch.pageX - rect.x) / rect.width;
+    const y = 100 * (touch.pageY - rect.y) / rect.height;
+
+    return { x, y };
+  }
+
 
   render() {
+    const mobileLogging = false;
     //checkForCollisions(this.state.ship, this.state.asteroids)
     // duplicate ships, asteroids, and bullets that are near the edges
     const ships = this.getRenderedObjectList(this.props.ships);
@@ -132,13 +189,20 @@ class GameScreen extends Component {
         width="100%" height="100%"
         viewBox="0 0 100 100"
         xmlns="http://www.w3.org/2000/svg"
-        ref={this.setFocusHandler}
-        tabIndex="-1"
-        onClick={this.handleClick}
       >
 
         {/* Background */}
-        <rect width="100" height="100" fill="black" />
+        <rect
+          width="100"
+          height="100"
+          fill="black"
+          ref={this.setFocusHandler}
+          tabIndex="-1"
+          onClick={this.handleClick}
+          onTouchStart={this.handleTouchStart}
+          onTouchEnd={this.handleTouchEnd}
+          onTouchMove={this.handleTouchMove}
+        />
 
         {/* Space ship */}
         {_.map(ships, (data) =>
@@ -155,6 +219,12 @@ class GameScreen extends Component {
           <Bullet {...bullet} />
         ))}
 
+        {mobileLogging && (this.props.logs || []).map((log, i) => (
+          <text key={log + i} x="2" y={`${3 + (3*i)}`} fill="#888888" style={{ fontSize: '2.5px' }}>
+            {log}
+          </text>
+        ))}
+
         <text x="2" y="95" fill="#888888" style={{ fontSize: '2.5px' }}>
           p to pause 
         </text>
@@ -168,6 +238,7 @@ class GameScreen extends Component {
             Paused
           </text>
         )}
+
 
       </svg>
     )

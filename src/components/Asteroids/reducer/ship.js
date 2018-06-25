@@ -43,7 +43,7 @@ export default function (state = initialState, action) {
     case constants.TURN_SHIP: {
       const key = action.key
       const ship = state.ships[key]
-      let da = 3 * ((action.direction === constants.RIGHT) ? 1 : -1)
+      let da = 3 * action.value;
 
       // modify for the target frame rate
       da *= (constants.IDEAL_FRAME_RATE / state.frameRate)
@@ -63,7 +63,7 @@ export default function (state = initialState, action) {
     case constants.ACCELERATE_SHIP: {
       const key = action.key
       const ship = state.ships[key]
-      const dr = 0.01 * ((action.direction === constants.FORWARD) ? 1 : -1)
+      const dr = 0.01 * action.value;
       const angle = (Math.PI * ship.rotation) / 180
 
       let dx = dr * Math.cos(angle)
@@ -165,139 +165,6 @@ export default function (state = initialState, action) {
         },
       }
     }
-
-    case constants.START_TURNING_SHIP: {
-      const key = action.key
-      const ship = state.ships[key]
-
-      if (ship.turning[action.direction]) {
-        return state
-      }
-
-      return {
-        ...state,
-        ships: {
-          ...state.ships,
-          [key]: {
-            ...ship,
-            turning: {
-              ...ship.turning,
-              [action.direction]: true,
-            }
-          },
-        },
-      }
-    }
-
-    case constants.STOP_TURNING_SHIP: {
-      const key = action.key
-      const ship = state.ships[key]
-
-      if (!ship.turning[action.direction]) {
-        return state
-      }
-
-      return {
-        ...state,
-        ships: {
-          ...state.ships,
-          [key]: {
-            ...ship,
-            turning: {
-              ...ship.turning,
-              [action.direction]: false,
-            }
-          },
-        },
-      }
-    }
-
-    case constants.START_ACCELERATING_SHIP: {
-      const key = action.key
-      const ship = state.ships[key]
-
-      if (ship.accelerating[action.direction]) {
-        return state
-      }
-
-      return {
-        ...state,
-        ships: {
-          ...state.ships,
-          [key]: {
-            ...ship,
-            accelerating: {
-              ...ship.accelerating,
-              [action.direction]: true,
-            },
-          },
-        },
-      }
-    }
-
-    case constants.STOP_ACCELERATING_SHIP: {
-      const key = action.key
-      const ship = state.ships[key]
-
-      if (!ship.accelerating[action.direction]) {
-        return state
-      }
-
-      return {
-        ...state,
-        ships: {
-          ...state.ships,
-          [key]: {
-            ...ship,
-            accelerating: {
-              ...ship.accelerating,
-              [action.direction]: false,
-            },
-          },
-        },
-      }
-    }
-
-    case constants.START_FIRING_FROM_SHIP: {
-      const key = action.key
-      const ship = state.ships[key]
-
-      if (ship.firing) {
-        return state
-      }
-
-      return {
-        ...state,
-        ships: {
-          ...state.ships,
-          [key]: {
-            ...ship,
-            firing: true,
-          },
-        },
-      }
-    }
-
-    case constants.STOP_FIRING_FROM_SHIP: {
-      const key = action.key
-      const ship = state.ships[key]
-
-      if (!ship.firing) {
-        return state
-      }
-
-      return {
-        ...state,
-        ships: {
-          ...state.ships,
-          [key]: {
-            ...ship,
-            firing: false,
-          },
-        },
-      }
-    }
-
 
     default:
       return state

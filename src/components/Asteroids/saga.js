@@ -43,6 +43,9 @@ import {
   setGameId,
   resetState,
 } from './actions/save';
+import {
+  log,
+} from './actions/log';
 import createShip from './utils/ship'
 import createAsteroid from './utils/asteroid'
 import {
@@ -251,21 +254,60 @@ export function* updateMovements () {
   const keysPressed = yield select(s => s.keysPressed);
   const paused = yield select(s => s.paused);
 
-  if (!paused) {
-    for (let i = 0; i < shipIds.length; i += 1) {
-      const id = shipIds[i];
-      if (keysPressed.ArrowLeft) {
-        yield put(turnShip(id, constants.LEFT));
-      }
-      if (keysPressed.ArrowRight) {
-        yield put(turnShip(id, constants.RIGHT));
-      }
-      if (keysPressed.ArrowUp) {
-        yield put(accelerateShip(id, constants.FORWARD));
-      }
-      if (keysPressed.ArrowDown) {
-        yield put(accelerateShip(id, constants.BACKWARD));
-      }
+  if (paused) {
+    return;
+  }
+
+  for (let i = 0; i < shipIds.length; i += 1) {
+    const id = shipIds[i];
+    if (keysPressed.ArrowLeft) {
+      yield put(turnShip(id, -1));
+    }
+    if (keysPressed.ArrowRight) {
+      yield put(turnShip(id, 1));
+    }
+    if (keysPressed.ArrowUp) {
+      yield put(accelerateShip(id, 1));
+    }
+    if (keysPressed.ArrowDown) {
+      yield put(accelerateShip(id, -1));
+    }
+  }
+
+  // TODO: consider giving the ship a more intuitive motion...
+  // that is, move the ship in the direction of the person's finger
+  const moveTouches = yield select(s => _.values(s.touches.move));
+
+  //yield put(log(moveTouches.length));
+
+  for (let i = 0; i < moveTouches.length; i += 1) {
+    //yield put(log('test 1'));
+    const touch = moveTouches[i];
+    //yield put(log(JSON.stringify(touch, null, 2)));
+    const start = touch.start;
+    //yield put(log(JSON.stringify(start, null, 2)));
+    const position = touch.position;
+    //yield put(log(JSON.stringify(position, null, 2)));
+    let dx = position.x - start.x;
+    let dy = - (position.y - start.y); // minus because of mathematical coordinate system
+    const r = Math.sqrt(dx*dx + dy*dy);
+
+    // don't be too sensitive
+    if (r <= 2) {
+      continue;
+    }
+
+    // but limit the magnitude of the movement, too
+    if (r > 20) {
+      const s = 20/r;
+      dx *= s;
+      dy *= s;
+    }
+
+    for (let j = 0; j < shipIds.length; j += 1) {
+      const id = shipIds[j];
+      yield put(turnShip(id, dx / 20));
+      yield put(accelerateShip(id, dy / 20));
     }
   }
 }
@@ -428,9 +470,10 @@ export function* handleBulletLifecycle() {
 export function* handleWeaponEvents () {
   const ships = yield select((s) => _.values(s.ships))
   const keysPressed = yield select(s => s.keysPressed);
+  const fireTouch = yield select(s => Boolean(Object.keys(s.touches.fire).length));
 
   for (let i = 0, ship = ships[i]; i < ships.length; i += 1, ship = ships[i]) {
-    if (ship.weaponCooldown <= 0 && keysPressed[' ']) {
+    if (ship.weaponCooldown <= 0 && (keysPressed[' '] || fireTouch)) {
       yield put(fireBulletFromShip(ship.key))
       yield put(setWeaponCooldown(ship.key, 20)) // TODO: save constant somewhere
     } else if (ship.weaponCooldown > 0) {
@@ -467,6 +510,7 @@ function* watchKeys () {
 
     while (yield waitForNextAction) {
       for (let i = 0; i < actionList.length; i += 1) {
+        yield put(log(actionList[i].type)); // TODO: for debugging on mobile
         yield put(actionList[i]);
       }
       setUpForNextAction();

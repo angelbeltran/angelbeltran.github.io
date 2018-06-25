@@ -6,6 +6,8 @@ import keysReducer from './keys';
 import focusReducer from './focus';
 import mountReducer from './mount';
 import saveReducer from './save';
+import touchReducer from './touch';
+import logReducer from './log';
 
 
 function composeReducers(...reducers) {
@@ -23,4 +25,6 @@ export default composeReducers(
   focusReducer,
   mountReducer,
   saveReducer,
+  touchReducer,
+  logReducer,
 );

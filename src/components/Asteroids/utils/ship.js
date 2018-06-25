@@ -1,4 +1,4 @@
-import { LEFT, RIGHT, FORWARD, BACKWARD, SHIP_WIDTH, SHIP_HEIGHT } from '../constants'
+import { SHIP_WIDTH, SHIP_HEIGHT } from '../constants'
 
 
 export default function createShip (
@@ -28,14 +28,6 @@ export default function createShip (
     movement: {
       x: moveX,
       y: moveY,
-    },
-    turning: {
-      [LEFT]: false,
-      [RIGHT]: false,
-    },
-    accelerating: {
-      [FORWARD]: false,
-      [BACKWARD]: false,
     },
     firing: false,
     weaponCooldown: 0,

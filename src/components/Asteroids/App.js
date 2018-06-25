@@ -9,6 +9,7 @@ import * as experienceActions from './actions/frame-rate' // TODO: rename file
 import * as keyActions from './actions/keys';
 import * as focusActions from './actions/focus';
 import * as mountActions from './actions/mount';
+import * as touchActions from './actions/touch';
 
 function mapStateToGameScreenProps (state) {
   return {
@@ -25,6 +26,7 @@ function mapDispatchToGameScreenProps (dispatch) {
     ...keyActions,
     ...focusActions,
     ...mountActions,
+    ...touchActions,
   }, dispatch)
 }
 
