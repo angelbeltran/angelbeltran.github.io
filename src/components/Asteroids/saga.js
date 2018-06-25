@@ -34,6 +34,15 @@ import {
   keyDown,
   keyUp,
 } from './actions/keys';
+import {
+  gameReceivedFocus,
+} from './actions/focus';
+import {
+  saveGame,
+  loadGame,
+  setGameId,
+  resetState,
+} from './actions/save';
 import createShip from './utils/ship'
 import createAsteroid from './utils/asteroid'
 import {
@@ -43,31 +52,67 @@ import {
 // import checkForCollisions from './collision'
 
 
-// TODO: remove the ship.firing, ship.turning, etc. props once we can
+// TODO: remove the ship.firing, ship.turning, etc. props if and once we can
 
 export default function* root (difficulty = constants.NORMAL) {
-  let gameTask
+  yield fork(handleFocusEvents);
+  // can't have reset click watcher be reset along with the watcher, else a continuous loop of resets will occur while holding the r button
+  yield fork(handlePauseAndResetClicks); 
 
-  yield fork(handlePauseAndResetClicks); // can't have reset click watcher be reset along with the watcher, else a continuous loop of resets will occur while holding the r button
+  let action;
+  let gameId;
+  let gameTask;
 
-  do {
-    if (gameTask) {
-      yield cancel(gameTask)
+  while (true) {
+    if (!action) {
+      action = yield take(constants.GAME_DID_MOUNT);
+      gameId = action.id;
+      gameTask = yield fork(bootup, gameId, true, difficulty);
+    } else if (action && action.type === constants.RESET) {
+      yield cancel(gameTask);
+      gameTask = yield fork(bootup, gameId, true, difficulty);
+    } else if (action.type === constants.GAME_WILL_UNMOUNT) {
+      // save and close up the game
+      yield put(saveGame());
+      yield cancel(gameTask);
+
+      // reset the game state, first fetching the saved games for loading the desired game
+      const savedGames = yield select(s => s.savedGames);
+      yield put(resetState());
+
+      // up mounting the game, load the desired game for the saved games cache
+      action = yield take(constants.GAME_DID_MOUNT);
+      gameId = action.id;
+      const gameToLoad = savedGames[gameId];
+      yield put(loadGame(gameToLoad));
+
+      // start it up!
+      gameTask = yield fork(bootup, gameId, false, difficulty);
     }
-    gameTask = yield fork(bootup, difficulty)
-  } while (yield take(constants.RESET))
+
+    action = yield take([constants.RESET, constants.GAME_WILL_UNMOUNT]);
+  }
 }
 
-export function* bootup (difficulty = constants.NORMAL) {
+/*
+ * ex: yield fork(bootup, 123, false, constants.NORMAL)
+ */
+export function* bootup (gameId, newGame, difficulty) {
+  if (gameId) {
+    yield put(setGameId(gameId));
+  }
+
   yield put(setFrameRate(constants.IDEAL_FRAME_RATE))
 
   yield fork(clock)
 
   yield fork(watchKeys);
 
-  yield call(initializeAsteroids, difficulty)
+  if (newGame) {
+    yield call(initializeAsteroids, difficulty)
 
-  yield fork(initializeShip)
+    yield fork(initializeShip)
+  }
 }
 
 export function* initializeAsteroids (difficulty = constants.NORMAL) {
@@ -171,7 +216,7 @@ export function* tick () {
 
   try {
     if (yield select(s => s.paused)) {
-      // if paused. not much to do
+      // if paused. not much action going on
       return;
     }
 
@@ -432,6 +477,14 @@ function* watchKeys () {
   }
 }
 
+export function* handleFocusEvents() {
+  yield takeEvery([constants.GAME_LOST_FOCUS], function* (action) {
+    if (yield select(s => !s.paused)) {
+      yield put(pause());
+    }
+  });
+}
+
 export function* handlePauseAndResetClicks() {
   const keysPressed = yield select(s => s.keysPressed);
   let rWasUp = !keysPressed.r;
@@ -444,6 +497,7 @@ export function* handlePauseAndResetClicks() {
       if (key === 'r' && rWasUp) {
         rWasUp = false;
         yield put(reset());
+        yield put(gameReceivedFocus()); // game implicitly gained focus by interaction
       } else if (key === 'p' && pWasUp) {
         pWasUp = false;
 
@@ -452,6 +506,7 @@ export function* handlePauseAndResetClicks() {
         } else {
           yield put(pause());
         }
+        yield put(gameReceivedFocus()); // game implicitly gained focus by interaction
       }
     } else {
       if (key === 'r') {

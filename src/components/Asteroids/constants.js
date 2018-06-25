@@ -56,3 +56,17 @@ export const UNPAUSE = 'actions/UNPAUSE';
 // keys pressed
 export const KEY_DOWN = 'actions/KEY_DOWN';
 export const KEY_UP = 'actions/KEY_UP';
+
+// game focus
+export const GAME_RECEIVED_FOCUS = 'actions/GAME_RECEIVED_FOCUS';
+export const GAME_LOST_FOCUS = 'actions/GAME_LOST_FOCUS';
+
+// game mounted?
+export const GAME_DID_MOUNT = 'actions/GAME_DID_MOUNT';
+export const GAME_WILL_UNMOUNT = 'actions/GAME_WILL_UNMOUNT';
+
+// saving games
+export const SAVE_GAME = 'actions/SAVE_GAME';
+export const SET_GAME_ID = 'actions/SET_GAME_ID';
+export const RESET_STATE = 'actions/RESET_STATE';
+export const LOAD_GAME = 'actions/LOAD_GAME';

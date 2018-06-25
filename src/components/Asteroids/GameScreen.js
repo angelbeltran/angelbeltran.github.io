@@ -11,12 +11,32 @@ import './GameScreen.css';
 // TODO: make the sides of the canvas sensitive to touch, so touch screen / mobile user can turn the game
 
 class GameScreen extends Component {
+  constructor(props) {
+    super(props);
+    this.setFocusHandler = this.setFocusHandler.bind(this);
+    this.handleFocus = this.handleFocus.bind(this);
+    this.handleBlur = this.handleBlur.bind(this);
+    this.handleClick = this.handleClick.bind(this);
+  }
+
   componentDidMount() {
-    this.props.unpause();
+    this.props.gameDidMount(1); // TODO: manage game ids?
+    this.svg.focus();
   }
 
   componentWillUnmount() {
-    this.props.pause();
+    this.props.gameWillUnmount(); // TODO: eliminate the previous call
+    this.svg = null;
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.gameFocused && !this.props.gameFocused) {
+      // recieve focus implicitly, e.g. by pressing the 'p' button to pause/unpause the game
+      if (document.activeElement === this.svg) {
+      } else {
+        this.svg.focus();
+      }
+    }
   }
   
   getRenderedObjectList = (entities) => {
@@ -73,6 +93,31 @@ class GameScreen extends Component {
     }, [])
   }
 
+  setFocusHandler(ref) {
+    if (ref && this.svg !== ref) {
+      this.svg = ref;
+      ref.onfocus = this.handleFocus;
+      ref.onblur = this.handleBlur;
+    }
+  }
+
+  handleFocus() {
+    this.props.gameReceivedFocus();
+  }
+
+  handleBlur() {
+    this.props.gameLostFocus();
+  }
+
+  handleClick() {
+    if (this.props.paused) {
+      this.props.unpause();
+    } else {
+      this.props.pause();
+    }
+  }
+
+
   render() {
     //checkForCollisions(this.state.ship, this.state.asteroids)
     // duplicate ships, asteroids, and bullets that are near the edges
@@ -87,6 +132,9 @@ class GameScreen extends Component {
         width="100%" height="100%"
         viewBox="0 0 100 100"
         xmlns="http://www.w3.org/2000/svg"
+        ref={this.setFocusHandler}
+        tabIndex="-1"
+        onClick={this.handleClick}
       >
 
         {/* Background */}
@@ -115,7 +163,8 @@ class GameScreen extends Component {
         </text>
 
         { this.props.paused && (
-          <text className="paused-display" x="50" y="50" fill="#aaaaaa" style={{ fontSize: '4px' }} textAnchor="middle" >
+          <text 
+            className="paused-display" x="50" y="50" fill="#aaaaaa" style={{ fontSize: '4px' }} textAnchor="middle" >
             Paused
           </text>
         )}

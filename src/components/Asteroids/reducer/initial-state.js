@@ -44,4 +44,10 @@ export default {
   paused: false,
 
   keysPressed: {},
+
+  gameFocused: true,
+
+  mounted: false,
+
+  savedGames: {},
 }

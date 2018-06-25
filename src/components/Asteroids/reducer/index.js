@@ -3,6 +3,9 @@ import asteroidReducer from './asteroid';
 import bulletReducer from './bullet';
 import frameRateReducer from './frame-rate';
 import keysReducer from './keys';
+import focusReducer from './focus';
+import mountReducer from './mount';
+import saveReducer from './save';
 
 
 function composeReducers(...reducers) {
@@ -17,4 +20,7 @@ export default composeReducers(
   bulletReducer,
   frameRateReducer,
   keysReducer,
+  focusReducer,
+  mountReducer,
+  saveReducer,
 );

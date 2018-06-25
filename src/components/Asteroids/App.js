@@ -7,6 +7,8 @@ import * as asteroidActions from './actions/asteroids'
 import * as bulletActions from './actions/bullets'
 import * as experienceActions from './actions/frame-rate' // TODO: rename file
 import * as keyActions from './actions/keys';
+import * as focusActions from './actions/focus';
+import * as mountActions from './actions/mount';
 
 function mapStateToGameScreenProps (state) {
   return {
@@ -21,6 +23,8 @@ function mapDispatchToGameScreenProps (dispatch) {
     ...bulletActions,
     ...experienceActions,
     ...keyActions,
+    ...focusActions,
+    ...mountActions,
   }, dispatch)
 }
 
