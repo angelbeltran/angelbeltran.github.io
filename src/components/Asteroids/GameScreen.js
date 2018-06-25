@@ -125,6 +125,10 @@ class GameScreen extends Component {
   handleTouchStart(e) {
     e.preventDefault();
 
+    if (this.props.paused) {
+      this.props.unpause();
+    }
+
     for (let i = 0; i < e.changedTouches.length; i += 1) {
       const touch = e.changedTouches[i];
       const pos = this.getTouchGameCoordinates(e, touch);
