@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Route, Link } from 'react-router-dom';
 import logo from './logo.svg';
+import './index.css';
 
 
 class Navbar extends Component {
@@ -8,9 +9,12 @@ class Navbar extends Component {
     super(props);
 
     this.toggleNavbar = this.toggleNavbar.bind(this);
+    this.handleMouseEnterBrand = this.handleMouseEnterBrand.bind(this);
+    this.handleMouseLeaveBrand = this.handleMouseLeaveBrand.bind(this);
 
     this.state = {
       collapsed: true,
+      overBrand: false,
     };
   }
 
@@ -20,15 +24,32 @@ class Navbar extends Component {
     });
   }
 
+  handleMouseEnterBrand() {
+    this.setState({
+      overBrand: true,
+    });
+  }
+
+  handleMouseLeaveBrand() {
+    this.setState({
+      overBrand: false,
+    });
+  }
+
   render() {
     const collapsed = this.state.collapsed;
+    const overBrand = this.state.overBrand;
 
     return (
       <nav className="navbar navbar-expand-sm navbar-light" ref={this.props.setNavRef} style={{ background: 'white', borderBottom: '1px solid rgba(0,0,0,0.125)' }} >
         <div className="container-fluid col-md-10 offset-md-1">
-          <Link to="/home" className="navbar-brand mr-auto">
-            <img alt="portrait" className="d-block" width="48" height="48" src={logo}/>
+          <Link to="/home" className="navbar-brand">
+            <img alt="portrait" className="d-block" width="48" height="48" src={logo} onMouseEnter={this.handleMouseEnterBrand} onMouseLeave={this.handleMouseLeaveBrand}/>
           </Link>
+
+          <div className={`mr-auto ${overBrand ? 'delayed-appearance' : 'delayed-disappearance'}`} style={{ color: 'rgba(0,0,0,.5)', maxWidth: '150px' }}>
+            <small>Created with React, Redux, and Redux-Saga.</small>
+          </div>
 
           <button onClick={this.toggleNavbar} className={`navbar-toggler ${collapsed ? 'collapsed' : ''}`} type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span className="navbar-toggler-icon"></span>
