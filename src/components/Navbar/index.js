@@ -24,7 +24,7 @@ class Navbar extends Component {
     const collapsed = this.state.collapsed;
 
     return (
-      <nav className="navbar navbar-expand-sm navbar-light bg-light" ref={this.props.setNavRef} >
+      <nav className="navbar navbar-expand-sm navbar-light" ref={this.props.setNavRef} style={{ background: 'white' }} >
         <div className="container-fluid col-md-10 offset-md-1">
           <Link to="/home" className="navbar-brand mr-auto">
             <img alt="portrait" className="d-block" width="48" height="48" src={logo}/>
