@@ -72,7 +72,7 @@ class App extends Component {
 
         <Navbar setNavRef={this.setNavRef}/>
 
-        <div className="row no-gutters" style={bodyStyle} >
+        <div className="row no-gutters col-md-10 offset-md-1" style={bodyStyle} >
           <div className="col">
             <Switch>
 
