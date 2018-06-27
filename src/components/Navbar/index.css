@@ -24,3 +24,13 @@
     opacity: 0;
   }
 }
+
+@media (min-width: 576px) {
+  .sm-pl-0 {
+    padding-left: 0!important;
+  }
+
+  .sm-pr-0 {
+    padding-right: 0!important;
+  }
+}

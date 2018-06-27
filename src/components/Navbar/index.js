@@ -41,7 +41,7 @@ class Navbar extends Component {
     const overBrand = this.state.overBrand;
 
     return (
-      <nav className="navbar navbar-expand-sm navbar-light" ref={this.props.setNavRef} style={{ background: 'white', borderBottom: '1px solid rgba(0,0,0,0.125)' }} >
+      <nav className="navbar navbar-expand-sm navbar-light sm-pl-0 sm-pr-0" ref={this.props.setNavRef} style={{ background: 'white', borderBottom: '1px solid rgba(0,0,0,0.125)' }} >
         <div className="container-fluid col-md-10 offset-md-1">
           <Link to="/home" className="navbar-brand">
             <img alt="portrait" className="d-block" width="48" height="48" src={logo} onMouseEnter={this.handleMouseEnterBrand} onMouseLeave={this.handleMouseLeaveBrand}/>

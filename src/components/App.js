@@ -9,6 +9,7 @@ import GameOfLife from './GameOfLife';
 import Graph from './Graph';
 import Maze3D from './Maze';
 import Tetris from './Tetris';
+import './App.css';
 
 
 class App extends Component {
@@ -72,84 +73,82 @@ class App extends Component {
 
         <Navbar setNavRef={this.setNavRef}/>
 
-        <div className="row no-gutters col-md-10 offset-md-1" style={bodyStyle} >
-          <div className="col">
-            <Switch>
+        <div className="container-fluid col-md-10 offset-md-1" style={bodyStyle} >
+          <Switch>
 
-              <Route path="/home" render={() => (
-                <Switch>
-                  <Route exact path="/home" component={HomePage} />
-                  <Redirect to="/home" />
-                </Switch>
-              )} />
+            <Route path="/home" render={() => (
+              <Switch>
+                <Route exact path="/home" component={HomePage} />
+                <Redirect to="/home" />
+              </Switch>
+            )} />
 
-              <Route path="/about" render={() => (
-                <Switch>
-                  <Route exact path="/about" render={() => (
-                    <AboutPage {...this.state.about} setGlobalState={this.setAboutState} />
-                  )} />
-                  <Redirect to="/about" />
-                </Switch>
-              )} />
+            <Route path="/about" render={() => (
+              <Switch>
+                <Route exact path="/about" render={() => (
+                  <AboutPage {...this.state.about} setGlobalState={this.setAboutState} />
+                )} />
+                <Redirect to="/about" />
+              </Switch>
+            )} />
 
-              <Route path="/contact" render={() => (
-                <Switch>
-                  <Route exact path="/contact" render={() => (
-                    <ContactPage {...this.state.contact} setGlobalState={this.setContactState} />
-                  )} />
-                  <Redirect to="/contact" />
-                </Switch>
-              )} />
+            <Route path="/contact" render={() => (
+              <Switch>
+                <Route exact path="/contact" render={() => (
+                  <ContactPage {...this.state.contact} setGlobalState={this.setContactState} />
+                )} />
+                <Redirect to="/contact" />
+              </Switch>
+            )} />
 
-              <Route path="/fun-stuff" render={() => (
-                <Switch>
+            <Route path="/fun-stuff" render={() => (
+              <Switch>
 
-                  <Route path="/fun-stuff/asteroids" render={() => (
-                    <Switch>
-                      <Route exact path="/fun-stuff/asteroids" render={() => (
-                        <Asteroids />
-                      )}/>
-                      <Redirect to="/fun-stuff/asteroids" />
-                    </Switch>
-                  )} />
+                <Route path="/fun-stuff/asteroids" render={() => (
+                  <Switch>
+                    <Route exact path="/fun-stuff/asteroids" render={() => (
+                      <Asteroids />
+                    )}/>
+                    <Redirect to="/fun-stuff/asteroids" />
+                  </Switch>
+                )} />
 
-                  <Route path="/fun-stuff/force-directed-graph" render={() => (
-                    <Switch>
-                      <Route exact path="/fun-stuff/force-directed-graph" component={Graph}/>
-                      <Redirect to="/fun-stuff/force-directed-graph" />
-                    </Switch>
-                  )} />
+                <Route path="/fun-stuff/force-directed-graph" render={() => (
+                  <Switch>
+                    <Route exact path="/fun-stuff/force-directed-graph" component={Graph}/>
+                    <Redirect to="/fun-stuff/force-directed-graph" />
+                  </Switch>
+                )} />
 
-                  <Route path="/fun-stuff/game-of-life" render={() => (
-                    <Switch>
-                      <Route exact path="/fun-stuff/game-of-life" component={GameOfLife}/>
-                      <Redirect to="/fun-stuff/game-of-life" />
-                    </Switch>
-                  )} />
+                <Route path="/fun-stuff/game-of-life" render={() => (
+                  <Switch>
+                    <Route exact path="/fun-stuff/game-of-life" component={GameOfLife}/>
+                    <Redirect to="/fun-stuff/game-of-life" />
+                  </Switch>
+                )} />
 
-                  <Route path="/fun-stuff/maze" render={() => (
-                    <Switch>
-                      <Route exact path="/fun-stuff/maze" component={Maze3D}/>
-                      <Redirect to="/fun-stuff/maze" />
-                    </Switch>
-                  )} />
+                <Route path="/fun-stuff/maze" render={() => (
+                  <Switch>
+                    <Route exact path="/fun-stuff/maze" component={Maze3D}/>
+                    <Redirect to="/fun-stuff/maze" />
+                  </Switch>
+                )} />
 
-                  <Route path="/fun-stuff/tetris" render={() => (
-                    <Switch>
-                      <Route exact path="/fun-stuff/tetris" component={Tetris}/>
-                      <Redirect to="/fun-stuff/tetris" />
-                    </Switch>
-                  )} />
+                <Route path="/fun-stuff/tetris" render={() => (
+                  <Switch>
+                    <Route exact path="/fun-stuff/tetris" component={Tetris}/>
+                    <Redirect to="/fun-stuff/tetris" />
+                  </Switch>
+                )} />
 
-                  <Redirect to="/" />
+                <Redirect to="/" />
 
-                </Switch>
-              )} />
+              </Switch>
+            )} />
 
-              <Redirect from="/" to="/home" />
+            <Redirect from="/" to="/home" />
 
-            </Switch>
-          </div>
+          </Switch>
         </div>
       </div>
     );

@@ -7,10 +7,10 @@ import portrait from './uoregon.jpg';
 class HomePage extends Component {
   render() {
     return (
-      <div className="container pt-4 no-gutters">
+      <div className="container-fluid pt-4 pl-0 pr-0 no-gutters">
         <div className="row d-flex">
 
-          <div className="col-sm-5 col-md-4 d-flex justify-content-center">
+          <div className="col-sm-5 col-md-4 d-flex justify-content-center justify-content-start-sm">
             <AspectRatio ratio="200/300" style={{ maxWidth: '200px', minWidth: '100px', maxHeight: '300px', flexGrow: 1 }}>
               <img src={portrait} alt="portrait" />
             </AspectRatio>
