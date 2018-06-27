@@ -68,7 +68,7 @@ class App extends Component {
     }
 
     return (
-      <div className="container-fluid p-0 m-0 bg-light">
+      <div className="container-fluid p-0 m-0 bg-light" style={{ minHeight: '100vh' }}>
 
         <Navbar setNavRef={this.setNavRef}/>
 
