@@ -20,8 +20,15 @@ class AboutPage extends Component {
 
   render() {
     return (
-      <div className="container pt-4">
+      <div className="container pt-4 no-gutters">
         <div className="row d-flex">
+
+          <div className="col-sm-5 col-md-4 d-flex justify-content-center">
+            <AspectRatio ratio="200/300" style={{ maxWidth: '200px', minWidth: '100px', maxHeight: '300px', flexGrow: 1 }}>
+              <img src={portrait} alt="portrait" />
+            </AspectRatio>
+          </div>
+
           <div className="col-sm-7 col-md-8 d-flex flex-column align-items-center justify-content-center text-center">
             <strong>Random Facts</strong>
             <hr />
@@ -33,14 +40,6 @@ class AboutPage extends Component {
 
           </div>
 
-            <div className="col-sm-5 col-md-4 d-flex justify-content-center">
-              <AspectRatio ratio="200/300" style={{ maxWidth: '200px', minWidth: '100px', maxHeight: '300px', flexGrow: 1 }}>
-                <img src={portrait} alt="portrait" />
-              </AspectRatio>
-            </div>
-        </div>
-
-        <div className="row">
         </div>
       </div>
     );
